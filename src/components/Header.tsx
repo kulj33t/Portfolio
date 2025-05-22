@@ -2,49 +2,50 @@ import React from "react";
 
 const Header: React.FC = () => {
   return (
-    <header style={styles.container}>
+    <div style={styles.container}>
       <div style={styles.leftBlock}>
-        {/* Japanese Name — Adjust as needed */}
-        <h1 style={styles.jpTitle}>ロリンジャ レノー</h1>
+        <h1 style={styles.jpTitle}>KULJEET</h1>
+        <h1 style={styles.jpTitle}>SINGH</h1>
 
-        {/* English Subheading */}
-        <p style={styles.subHeading}>FRENCH CREATIVE DEVELOPER IN JAPAN</p>
+        <p style={styles.subHeading}>CREATIVE DEVELOPER IN INDIA</p>
 
-        {/* Description */}
         <p style={styles.description}>
           My main objective is to make cool webGL websites accessible for everyone on the internet.
         </p>
       </div>
 
-      {/* Social Buttons — Replace links with your own */}
       <div style={styles.socialLinks}>
         <a href="mailto:your-email@example.com" style={styles.socialButton}>✉️</a>
         <a href="https://github.com/your-username" target="_blank" style={styles.socialButton}>🐙</a>
         <a href="https://linkedin.com/in/your-profile" target="_blank" style={styles.socialButton}>💼</a>
       </div>
-    </header>
+    </div>
   );
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
+    padding: "5vh",
     position: "relative",
     height: "100vh",
-    padding: "80px 60px",
+    width: "100vw",
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    alignItems: "center",
     fontFamily: "Arial, sans-serif",
-    color: "#111",
   },
   leftBlock: {
+    flex: "1",
     maxWidth: "60%",
+    minWidth: "60%",
   },
   jpTitle: {
-    fontSize: "64px",
-    fontWeight: "900",
-    marginBottom: "10px",
-  },
+  fontSize: "94px",
+  fontWeight: "900",
+  marginBottom: "10px",
+  fontFamily: "'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', 'Georgia', serif",
+  letterSpacing: "3px",
+},
   subHeading: {
     fontSize: "14px",
     letterSpacing: "1px",
@@ -52,22 +53,19 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   description: {
     fontSize: "16px",
-    color: "#444",
+    color: "#333",
     lineHeight: "1.6",
   },
   socialLinks: {
-    position: "absolute",
-    top: "50%",
-    right: "20px",
-    transform: "translateY(-50%)",
     display: "flex",
     flexDirection: "column",
-    gap: "12px",
+    gap: "32px",
+    alignItems: "center",
   },
   socialButton: {
-    fontSize: "20px",
     textDecoration: "none",
     color: "#000",
+    fontSize: "24px",
     transition: "transform 0.2s ease",
   },
 };

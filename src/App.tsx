@@ -17,23 +17,10 @@ const App: React.FC = () => {
         </section>
 
         <section className="section">
-          {/* Experience, Projects, About, etc. */}
-          <h2>Experience Section (Coming Soon)</h2>
-        </section>
-        <section className="section">
-          {/* Experience, Projects, About, etc. */}
-          <h2>Experience Section (Coming Soon)</h2>
-        </section>
-        <section className="section">
-          {/* Experience, Projects, About, etc. */}
-          <h2>Experience Section (Coming Soon)</h2>
-        </section>
-        <section className="section">
-          {/* Experience, Projects, About, etc. */}
           <h2>Experience Section (Coming Soon)</h2>
         </section>
 
-        <section className="section">
+        <section className="footer">
           <Footer />
         </section>
       </main>

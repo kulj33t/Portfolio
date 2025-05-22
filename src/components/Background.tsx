@@ -31,7 +31,7 @@ const Firefly: React.FC<{ firefly: FireflyProps }> = ({ firefly }) => {
         />
       </bufferGeometry>
       <pointsMaterial
-        color={0xffcc00}
+        color={0xccff00}  // Changed to lime-yellow
         size={firefly.size}
         transparent
         opacity={1}
@@ -102,8 +102,8 @@ const Background: React.FC = () => {
   return (
     <div style={{ position: 'absolute', width: '100%', height: '100%', zIndex: -5 }}>
       <Canvas camera={{ position: [0, 0, 400], fov: 75 }} gl={{ alpha: true }}>
-        <primitive attach="background" object={new THREE.Color('#fdf6e3')} />
-        <ambientLight intensity={1} />
+        <primitive attach="background" object={new THREE.Color('#000000')} />
+        <ambientLight intensity={0.2} />
         <FireflyField />
       </Canvas>
     </div>
