@@ -31,12 +31,12 @@ const Firefly: React.FC<{ firefly: FireflyProps }> = ({ firefly }) => {
         />
       </bufferGeometry>
       <pointsMaterial
-        color={0xfddba3}
+        color={0xffcc00}
         size={firefly.size}
         transparent
-        opacity={0.8}
+        opacity={1}
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={THREE.NormalBlending}
       />
     </points>
   );
@@ -46,7 +46,7 @@ const FireflyField: React.FC = () => {
   const [fireflies, setFireflies] = useState<FireflyProps[]>([]);
 
   const createFirefly = useCallback(() => {
-    const size = Math.random() * 2;
+    const size = Math.random() * 3;
     const position = new THREE.Vector3(
       Math.random() * window.innerWidth - window.innerWidth / 2,
       Math.random() * window.innerHeight - window.innerHeight / 2,
@@ -78,7 +78,7 @@ const FireflyField: React.FC = () => {
           })
           .filter(Boolean) as FireflyProps[];
 
-        if (updated.length < 100) {
+        if (updated.length < 600) {
           for (let i = 0; i < 5; i++) updated.push(createFirefly());
         }
 
@@ -100,10 +100,10 @@ const FireflyField: React.FC = () => {
 
 const Background: React.FC = () => {
   return (
-    <div style={{ position: 'absolute', width: '100%', height: '100%', zIndex: -1 }}>
+    <div style={{ position: 'absolute', width: '100%', height: '100%', zIndex: -5 }}>
       <Canvas camera={{ position: [0, 0, 400], fov: 75 }} gl={{ alpha: true }}>
-        <primitive attach="background" object={new THREE.Color('#1e1e1e')} />
-        <ambientLight intensity={0.5} />
+        <primitive attach="background" object={new THREE.Color('#fdf6e3')} />
+        <ambientLight intensity={1} />
         <FireflyField />
       </Canvas>
     </div>
