@@ -71,7 +71,6 @@ const styles: { [key: string]: React.CSSProperties } = {
   heading: {
     fontSize: "36px",
     fontFamily: "'Tenkai', sans-serif",
-    color: "#fff",
     marginBottom: "40px",
     textAlign: "center",
   },

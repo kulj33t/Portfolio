@@ -4,7 +4,7 @@ const Header: React.FC = () => {
   return (
     <div style={styles.wrapper}>
       <header style={styles.container}>
-       <a href="hero" style={styles.logo}>KS</a>
+       <a href="#hero" style={styles.logo}>KS</a>
 
         <nav style={styles.nav}>
           <a href="#resume" style={styles.link}>RESUME</a>

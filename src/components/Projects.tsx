@@ -9,119 +9,115 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: "Portfolio Website",
-    description: "My personal portfolio built with React and TypeScript.",
-    image: "/projects/portfolio.png",
-    url: "https://yourportfolio.com",
+    title: "3D Solar System Planets to Explore",
+    description:
+      "Explore the wonders of our solar system with this captivating 3D simulation using Three.js.",
+    image: "/projects/solar-system.png",
+    url: "https://example.com/solar-system",
+  },
+  {
+    title: "Yoom - Video Conferencing App",
+    description:
+      "Simplify your video conferencing experience with Yoom. Seamlessly connect with colleagues and friends.",
+    image: "/projects/yoom.png",
+    url: "https://example.com/yoom",
   },
 ];
 
 const Projects: React.FC = () => {
   return (
-    <div style={styles.wrapper}>
-      <section style={styles.container}>
-        <h1 style={styles.heading}>Projects</h1>
+    <section style={styles.section}>
+      <div style={styles.wrapper}>
+        <h1 style={styles.heading}>
+          A small selection of recent projects
+        </h1>
 
-        <div style={styles.horizontalScroll}>
+        <div style={styles.cardContainer}>
           {projects.map(({ title, description, image, url }) => (
             <div key={title} style={styles.card}>
               <img src={image} alt={title} style={styles.image} />
               <div style={styles.cardContent}>
-                <h3 style={styles.projectTitle}>{title}</h3>
+                <h2 style={styles.projectTitle}>{title}</h2>
                 <p style={styles.projectDescription}>{description}</p>
                 {url && (
                   <a
                     href={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    style={styles.projectLink}
+                    style={styles.link}
                   >
-                    View Project
+                    Check Live Site
                   </a>
                 )}
               </div>
             </div>
           ))}
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
   );
 };
 
 const styles: { [key: string]: React.CSSProperties } = {
-  wrapper: {
+  section: {
     width: "100%",
     minHeight: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "40px 20px",
+    padding: "80px 20px",
   },
-  container: {
-    width: "100%",
-    maxWidth: "800px",
-    padding: "40px",
-    borderRadius: "16px",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    backdropFilter: "blur(10px)",
-    WebkitBackdropFilter: "blur(10px)",
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-    color: "#ccc",
-    overflow: "hidden"
+  wrapper: {
+    maxWidth: "1200px",
+    margin: "0 auto",
   },
-  heading: {
+ heading: {
     fontSize: "36px",
     fontFamily: "'Tenkai', sans-serif",
-    color: "#fff",
     marginBottom: "40px",
     textAlign: "center",
   },
-  horizontalScroll: {
+  cardContainer: {
     display: "flex",
-    overflowX: "auto",
-    gap: "24px",
-    paddingBottom: "10px",
-    scrollbarWidth: "thin",
+    gap: "40px",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   card: {
-    flex: "0 0 280px",
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    borderRadius: "12px",
+     backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: "16px",
+    width: "100%",
+    maxWidth: "500px",
     overflow: "hidden",
-    boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
+    boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
     display: "flex",
     flexDirection: "column",
-    cursor: "pointer",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
-  },
-  cardContent: {
-    padding: "16px",
-    flex: 1,
-    display: "flex",
-    flexDirection: "column",
+    transition: "transform 0.3s ease",
   },
   image: {
     width: "100%",
-    height: "180px",
+    height: "280px",
     objectFit: "cover",
+  },
+  cardContent: {
+    padding: "24px",
+    display: "flex",
+    flexDirection: "column",
+    flexGrow: 1,
   },
   projectTitle: {
     fontSize: "22px",
-    margin: "0 0 12px 0",
-    color: "#fff",
+    fontWeight: 700,
+    marginBottom: "12px",
   },
   projectDescription: {
     fontSize: "16px",
+    color: "#d1d5db",
+    marginBottom: "20px",
     flexGrow: 1,
-    color: "#ddd",
-    marginBottom: "16px",
   },
-  projectLink: {
-    alignSelf: "flex-start",
-    color: "#1e90ff",
-    fontWeight: "600",
-    textDecoration: "none",
+  link: {
     fontSize: "14px",
+    fontWeight: 600,
+    color: "#c084fc",
+    textDecoration: "none",
   },
 };
 
