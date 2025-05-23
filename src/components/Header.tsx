@@ -2,71 +2,64 @@ import React from "react";
 
 const Header: React.FC = () => {
   return (
-    <div style={styles.container}>
-      <div style={styles.leftBlock}>
-        <h1 style={styles.jpTitle}>KULJEET</h1>
-        <h1 style={styles.jpTitle}>SINGH</h1>
+    <div style={styles.wrapper}>
+      <header style={styles.container}>
+       <a href="hero" style={styles.logo}>KS</a>
 
-        <p style={styles.subHeading}>CREATIVE DEVELOPER IN INDIA</p>
-
-        <p style={styles.description}>
-          My main objective is to make cool webGL websites accessible for everyone on the internet.
-        </p>
-      </div>
-
-      <div style={styles.socialLinks}>
-        <a href="mailto:your-email@example.com" style={styles.socialButton}>✉️</a>
-        <a href="https://github.com/your-username" target="_blank" style={styles.socialButton}>🐙</a>
-        <a href="https://linkedin.com/in/your-profile" target="_blank" style={styles.socialButton}>💼</a>
-      </div>
+        <nav style={styles.nav}>
+          <a href="#resume" style={styles.link}>RESUME</a>
+          <a href="#footer" style={styles.link}>LET'S CONNECT</a>
+        </nav>
+      </header>
     </div>
   );
 };
 
+
 const styles: { [key: string]: React.CSSProperties } = {
-  container: {
-    padding: "5vh",
-    position: "relative",
-    height: "100vh",
-    width: "100vw",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    fontFamily: "Arial, sans-serif",
-  },
-  leftBlock: {
-    flex: "1",
-    maxWidth: "60%",
-    minWidth: "60%",
-  },
-  jpTitle: {
-  fontSize: "94px",
-  fontWeight: "900",
-  marginBottom: "10px",
-  fontFamily: "'Shippori Mincho', 'Noto Serif JP', 'Yu Mincho', 'Georgia', serif",
-  letterSpacing: "3px",
+
+wrapper: {
+  position: "fixed",
+  top: "2%",
+  left: "50%",
+  transform: "translateX(-50%)",
+  zIndex: 100,
+  width: "60%",
+  borderRadius: "16px",
+  overflow: "hidden",
 },
-  subHeading: {
+
+container: {
+  width: "100%",
+  padding: "20px 40px",
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  backgroundColor: "rgba(255, 255, 255, 0.025)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
+  color: "#ccc",
+},
+
+  logo: {
+    fontFamily: "'Tenkai', sans-serif",
+    fontSize: "24px",
+    color: "#fff",
+    letterSpacing: "2px",
+    textDecoration: "none",
+    cursor:"pointer"
+  },
+  nav: {
+    display: "flex",
+    gap: "40px",
+  },
+  link: {
+    color: "#ccc",
+    textDecoration: "none",
+    fontWeight: 500,
     fontSize: "14px",
     letterSpacing: "1px",
-    marginBottom: "20px",
-  },
-  description: {
-    fontSize: "16px",
-    color: "#333",
-    lineHeight: "1.6",
-  },
-  socialLinks: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "32px",
-    alignItems: "center",
-  },
-  socialButton: {
-    textDecoration: "none",
-    color: "#000",
-    fontSize: "24px",
-    transition: "transform 0.2s ease",
+    transition: "color 0.2s ease",
   },
 };
 

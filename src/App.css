@@ -1,3 +1,9 @@
+@font-face {
+  font-family: 'Tenkai';
+  src: url('/fonts/Tenkai.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
 * {
   margin: 0;
   padding: 0;
@@ -28,16 +34,11 @@ body,
   position: fixed;
   top: 0;
   left: 0;
-  z-index: -10;
+  z-index: -100;
   width: 100%;
   height: 100%;
   pointer-events: none;
-}
-
-.hero-section {
-  height: 100vh;
-  position: relative;
-  z-index: 1;
+  background-color: black;
 }
 
 .section {
@@ -45,13 +46,4 @@ body,
   padding: 100px 60px;
   position: relative;
   z-index: 1;
-}
-
-.footer {
-    height: 100vh;
-  padding: 80px 60px;
-
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(3px);
 }

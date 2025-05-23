@@ -2,6 +2,11 @@ import React from "react";
 import Background from "./components/Background";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import Hero from "./components/Hero";
+import About from "./components/About";
+import EduExp from "./components/EduExp";
+import Tech from "./components/Tech";
+import Projects from "./components/Projects";
 import "./App.css";
 
 const App: React.FC = () => {
@@ -12,16 +17,29 @@ const App: React.FC = () => {
       </div>
 
       <main>
-        <section className="hero-section">
-          <Header />
+        <Header />
+        <section id="hero">
+          <Hero />
         </section>
 
-        <section className="section">
-          <h2>Experience Section (Coming Soon)</h2>
+        <section id="about">
+          <About/>
         </section>
 
-        <section className="footer">
-          <Footer />
+        <section id="EduExp">
+          <EduExp/>
+        </section>
+
+        <section id="Tech">
+          <Tech/>
+        </section>
+
+        <section id="Project">
+          <Projects/>
+        </section>
+
+        <section id="footer">
+          <Footer/>
         </section>
       </main>
     </div>

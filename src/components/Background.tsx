@@ -31,7 +31,7 @@ const Firefly: React.FC<{ firefly: FireflyProps }> = ({ firefly }) => {
         />
       </bufferGeometry>
       <pointsMaterial
-        color={0xccff00}  // Changed to lime-yellow
+        color={0x00ff00}
         size={firefly.size}
         transparent
         opacity={1}
@@ -78,7 +78,7 @@ const FireflyField: React.FC = () => {
           })
           .filter(Boolean) as FireflyProps[];
 
-        if (updated.length < 600) {
+        if (updated.length < 200) {
           for (let i = 0; i < 5; i++) updated.push(createFirefly());
         }
 
