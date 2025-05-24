@@ -3,7 +3,11 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
-const FloatingIcon: React.FC<{ url: string; position: [number, number, number] }> = ({ url, position }) => {
+const FloatingIcon: React.FC<{
+  url: string;
+  position: [number, number, number];
+  size?: number;
+}> = ({ url, position, size = 1.4 }) => {
   const ref = useRef<THREE.Mesh>(null!);
   const texture = useTexture(url);
 
@@ -17,13 +21,24 @@ const FloatingIcon: React.FC<{ url: string; position: [number, number, number] }
 
   return (
     <mesh ref={ref} position={position}>
-      <planeGeometry args={[1.4, 1.4]} />
+      <planeGeometry args={[size, size]} />
       <meshBasicMaterial map={texture} transparent />
     </mesh>
   );
 };
 
 const FloatingBackground = () => {
+  const circlePositions = [
+    [-5, 1.5, 0],
+    [-5, -2, 0],
+    [-6.5, -0.2, 0],
+    [6, 1, 0],
+    [4, 2, 0],
+    [5,-1.8, 0],
+  ];
+
+  const circleSizes = [0.3, 0.7, 1];
+
   return (
     <Canvas
       style={{
@@ -36,8 +51,19 @@ const FloatingBackground = () => {
     >
       <ambientLight />
       <Suspense fallback={null}>
-        <FloatingIcon url="/icons/coffee.png" position={[-5, 0, 0]} />
-        <FloatingIcon url="/icons/mug.png" position={[5, 0, 0]} />
+        {/* Main Icons */}
+        <FloatingIcon url="/icons/about/coffee.png" position={[-5, 0, 0]} />
+        <FloatingIcon url="/icons/about/mug.png" position={[5, 0, 0]} />
+
+        {/* Floating Circles */}
+        {circlePositions.map((pos, index) => (
+          <FloatingIcon
+            key={`circle-${index}`}
+            url="/icons/about/circle.png"
+            position={pos as [number, number, number]}
+            size={circleSizes[index % circleSizes.length]}
+          />
+        ))}
       </Suspense>
       <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
     </Canvas>
@@ -64,7 +90,7 @@ const About: React.FC = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   wrapper: {
     height: "100vh",
-    width: "100%",
+    width: "100vw",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -72,30 +98,41 @@ const styles: { [key: string]: React.CSSProperties } = {
     zIndex: 1,
   },
   container: {
-    width: "90%",
-    maxWidth: "700px",
-    padding: "40px",
-    borderRadius: "16px",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    backdropFilter: "blur(10px)",
-    WebkitBackdropFilter: "blur(10px)",
-    color: "#ccc",
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
-  },
+  width: "50vw",
+  minWidth: "400px",
+  minHeight: "200px",
+  height: "30vh",
+  padding: "2vh",
+  borderRadius: "1.6vh",
+  backgroundColor: "rgba(255, 255, 255, 0.05)",
+  backdropFilter: "blur(10px)",
+  WebkitBackdropFilter: "blur(10px)",
+  color: "#ccc",
+  boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.1)",
+  overflow: "hidden",
+  display: "flex",
+  flexDirection:"column",
+  alignItems: "center",
+  justifyContent: "center",
+  textAlign: "center",
+},
+
+
   greeting: {
-    fontFamily: "'Tenkai', sans-serif",
-    fontSize: "42px",
-    marginBottom: "24px",
-    color: "#fff",
-    letterSpacing: "2px",
-    textAlign: "center",
-  },
-  text: {
-    fontSize: "18px",
-    lineHeight: 1.6,
-    color: "#ddd",
-    textAlign: "center",
-  },
+  fontFamily: "'Tenkai', sans-serif",
+  fontSize: "clamp(1.5rem, 2vw + 1vh, 3rem)",
+  marginBottom: "24px",
+  color: "#fff",
+  letterSpacing: "2px",
+  textAlign: "center",
+},
+text: {
+  fontSize: "clamp(1rem, 2vw + 1vh, 1.2rem)",
+  lineHeight: 1.6,
+  color: "#ddd",
+  textAlign: "center",
+}
+
 };
 
 export default About;

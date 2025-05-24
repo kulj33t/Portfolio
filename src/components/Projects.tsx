@@ -28,9 +28,7 @@ const Projects: React.FC = () => {
   return (
     <section style={styles.section}>
       <div style={styles.wrapper}>
-        <h1 style={styles.heading}>
-          A small selection of recent projects
-        </h1>
+        <h1 style={styles.heading}>A small selection of recent projects</h1>
 
         <div style={styles.cardContainer}>
           {projects.map(({ title, description, image, url }) => (
@@ -60,36 +58,48 @@ const Projects: React.FC = () => {
 
 const styles: { [key: string]: React.CSSProperties } = {
   section: {
-    width: "100%",
+    width: "100vw",
     minHeight: "100vh",
-    padding: "80px 20px",
+    padding: "6vh 4vw",
+    backgroundColor: "transparent",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
   },
   wrapper: {
+    width: "100%",
     maxWidth: "1200px",
-    margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    gap: "4vh",
   },
- heading: {
-    fontSize: "36px",
+  heading: {
+    fontSize: "clamp(1.8rem, 2vw + 1vh, 3rem)",
     fontFamily: "'Tenkai', sans-serif",
-    marginBottom: "40px",
+    marginBottom: "1vh",
     textAlign: "center",
+    color: "#fff",
+    letterSpacing: "2px",
   },
   cardContainer: {
     display: "flex",
-    gap: "40px",
     flexWrap: "wrap",
+    gap: "3vw",
     justifyContent: "center",
   },
   card: {
-     backgroundColor: "rgba(255, 255, 255, 0.05)",
-    borderRadius: "16px",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    borderRadius: "1.6vh",
     width: "100%",
     maxWidth: "500px",
     overflow: "hidden",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.5)",
+    boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.2)",
     display: "flex",
     flexDirection: "column",
     transition: "transform 0.3s ease",
+    backdropFilter: "blur(10px)",
+    WebkitBackdropFilter: "blur(10px)",
   },
   image: {
     width: "100%",
@@ -97,27 +107,31 @@ const styles: { [key: string]: React.CSSProperties } = {
     objectFit: "cover",
   },
   cardContent: {
-    padding: "24px",
+    padding: "2vh 2vw",
     display: "flex",
     flexDirection: "column",
+    gap: "1vh",
+    color: "#ccc",
     flexGrow: 1,
   },
   projectTitle: {
-    fontSize: "22px",
+    fontSize: "clamp(1.2rem, 1.5vw + 0.5vh, 1.8rem)",
     fontWeight: 700,
-    marginBottom: "12px",
+    color: "#fff",
+    fontFamily: "'Tenkai', sans-serif",
   },
   projectDescription: {
-    fontSize: "16px",
-    color: "#d1d5db",
-    marginBottom: "20px",
+    fontSize: "clamp(0.9rem, 1vw + 0.4vh, 1.1rem)",
+    color: "#ddd",
+    lineHeight: 1.6,
     flexGrow: 1,
   },
   link: {
-    fontSize: "14px",
+    fontSize: "clamp(0.8rem, 1vw, 1rem)",
     fontWeight: 600,
     color: "#c084fc",
     textDecoration: "none",
+    marginTop: "auto",
   },
 };
 

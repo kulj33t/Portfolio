@@ -26,9 +26,9 @@ const TechStack: React.FC = () => {
       <div style={styles.blurOverlay}></div>
       <motion.div
         style={styles.motionWrapper}
-        animate={isInView ? { y: ['20%', '-20%'] } : { y: 0 }}
+        animate={isInView ? { y: ['30%', '-30%'] } : { y: 0 }}
         transition={{
-          duration: 5,
+          duration: 10,
           repeat: Infinity,
           repeatType: 'reverse',
           ease: 'easeInOut',
@@ -48,8 +48,8 @@ const TechStack: React.FC = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   wrapper: {
     position: 'relative',
-    width: '100%',
-    height: '100%',
+    width: '350px',
+    height: '400px',
     overflow: 'hidden',
     display: 'flex',
     justifyContent: 'center',

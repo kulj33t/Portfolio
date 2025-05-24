@@ -5,14 +5,16 @@ const Footer: React.FC = () => {
     <footer style={styles.container}>
       <div style={styles.content}>
         <h1 style={styles.heading}>Let’s Connect</h1>
-        <p style={styles.subtext}>Feel free to reach out for collaborations or just a friendly hello!</p>
+        <p style={styles.subtext}>
+          Feel free to reach out for collaborations or just a friendly hello!
+        </p>
 
         <div style={styles.socialLinks}>
           <a
             href="mailto:kuljeet.singh.dev@gmail.com"
             style={styles.socialButton}
           >
-            <img src="/icons/email.png" alt="Email" style={styles.iconImage} />
+            <img src="/icons/social/email.png" alt="Email" style={styles.iconImage} />
           </a>
 
           <a
@@ -21,7 +23,7 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             style={styles.socialButton}
           >
-            <img src="/icons/github.png" alt="GitHub" style={styles.iconImage} />
+            <img src="/icons/social/github.png" alt="GitHub" style={styles.iconImage} />
           </a>
 
           <a
@@ -30,7 +32,7 @@ const Footer: React.FC = () => {
             rel="noopener noreferrer"
             style={styles.socialButton}
           >
-            <img src="/icons/linkedin.png" alt="LinkedIn" style={styles.iconImage} />
+            <img src="/icons/social/linkedin.png" alt="LinkedIn" style={styles.iconImage} />
           </a>
         </div>
 
@@ -43,61 +45,65 @@ const Footer: React.FC = () => {
 const styles: { [key: string]: React.CSSProperties } = {
   container: {
     height: "100vh",
-    width: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.002)",
+    width: "100vw",
+    backgroundColor: "rgba(255, 255, 255, 0.025)",
     backdropFilter: "blur(2px)",
     WebkitBackdropFilter: "blur(2px)",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    textAlign: "center",
-    padding: "40px 20px",
+    padding: "5vh 5vw",
     color: "#ccc",
-    fontFamily: "'Tenkai', sans-serif",
     position: "relative",
-    boxShadow: "inset 0 2px 30px rgba(0,0,0,0.3)",
+    textAlign: "center",
   },
   content: {
-    maxWidth: "600px",
+    width: "clamp(280px, 70vw, 800px)",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    gap: "24px",
+    gap: "clamp(1.5rem, 3vh, 2.5rem)",
+    padding: "3vh 2vw",
+    borderRadius: "1.6vh",
+    boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.1)",
   },
   heading: {
-    fontSize: "36px",
+    fontSize: "clamp(1.5rem, 2vw + 1vh, 3rem)",
     color: "#fff",
-    marginBottom: "8px",
+    fontFamily: "'Tenkai', sans-serif",
+    letterSpacing: "2px",
   },
   subtext: {
-    fontSize: "16px",
+    fontSize: "clamp(0.9rem, 1vw + 0.5vh, 1.2rem)",
     color: "#bbb",
-    maxWidth: "500px",
-    lineHeight: "1.5",
+    lineHeight: 1.6,
+    maxWidth: "600px",
   },
   socialLinks: {
     display: "flex",
-    gap: "20px",
-    marginTop: "20px",
+    gap: "clamp(1rem, 2vw, 2rem)",
+    marginTop: "1vh",
   },
   socialButton: {
-    width: "48px",
-    height: "48px",
+    width: "clamp(40px, 4vw, 48px)",
+    height: "clamp(40px, 4vw, 48px)",
     borderRadius: "50%",
     backgroundColor: "rgba(255, 255, 255, 0.08)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
     transition: "transform 0.2s ease",
+    cursor: "pointer",
   },
   iconImage: {
-    width: "24px",
-    height: "24px",
+    width: "clamp(20px, 2vw, 28px)",
+    height: "clamp(20px, 2vw, 28px)",
+    objectFit: "contain",
   },
   credit: {
-    marginTop: "40px",
-    fontSize: "14px",
+    fontSize: "clamp(0.75rem, 1vw, 0.95rem)",
     color: "#888",
+    marginTop: "2vh",
   },
 };
 
