@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 
 const skills = [
   { name: 'User Research', icon: '/icons/user-research.png' },
@@ -18,12 +18,15 @@ const skills = [
 ];
 
 const TechStack: React.FC = () => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: false, margin: '-50px' });
+
   return (
-    <div style={styles.wrapper}>
+    <div ref={ref} style={styles.wrapper}>
       <div style={styles.blurOverlay}></div>
       <motion.div
         style={styles.motionWrapper}
-        animate={{ y: ['20%', '-20%'] }}
+        animate={isInView ? { y: ['20%', '-20%'] } : { y: 0 }}
         transition={{
           duration: 5,
           repeat: Infinity,
@@ -81,31 +84,29 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: '32px',
     objectFit: 'contain',
   },
-blurOverlay: {
-  position: 'absolute',
-  inset: 0,
-  pointerEvents: 'none',
-  zIndex: 10,
-  background: `
-    radial-gradient(
-      ellipse at center,
-      rgba(17, 17, 17, 0) 45%,
-      rgba(17, 17, 17, 0.4) 65%,
-      rgba(17, 17, 17, 0.65) 80%,
-      rgba(17, 17, 17, 0.85) 100%
-    ),
-    linear-gradient(to right,
-      rgba(17, 17, 17, 0.7) 0%,
-      rgba(17, 17, 17, 0.4) 10%,
-      rgba(17, 17, 17, 0) 30%,
-      rgba(17, 17, 17, 0) 70%,
-      rgba(17, 17, 17, 0.4) 90%,
-      rgba(17, 17, 17, 0.7) 100%
-    )
-  `,
-},
-
-
+  blurOverlay: {
+    position: 'absolute',
+    inset: 0,
+    pointerEvents: 'none',
+    zIndex: 10,
+    background: `
+      radial-gradient(
+        ellipse at center,
+        rgba(17, 17, 17, 0) 45%,
+        rgba(17, 17, 17, 0.4) 65%,
+        rgba(17, 17, 17, 0.65) 80%,
+        rgba(17, 17, 17, 0.85) 100%
+      ),
+      linear-gradient(to right,
+        rgba(17, 17, 17, 0.7) 0%,
+        rgba(17, 17, 17, 0.4) 10%,
+        rgba(17, 17, 17, 0) 30%,
+        rgba(17, 17, 17, 0) 70%,
+        rgba(17, 17, 17, 0.4) 90%,
+        rgba(17, 17, 17, 0.7) 100%
+      )
+    `,
+  },
 };
 
 export default TechStack;
