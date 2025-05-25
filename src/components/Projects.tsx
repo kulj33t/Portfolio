@@ -9,18 +9,15 @@ type Project = {
 
 const projects: Project[] = [
   {
-    title: "3D Solar System Planets to Explore",
+    title: "AttendX",
     description:
-      "Explore the wonders of our solar system with this captivating 3D simulation using Three.js.",
-    image: "/projects/solar-system.png",
-    url: "https://example.com/solar-system",
+      "A geolocation-based attendance application built with React Native, using Expo and Figma for UI/Frontend design.",
+    image: "icons/projects/attendx.png",
   },
   {
-    title: "Yoom - Video Conferencing App",
-    description:
-      "Simplify your video conferencing experience with Yoom. Seamlessly connect with colleagues and friends.",
-    image: "/projects/yoom.png",
-    url: "https://example.com/yoom",
+    title: "Coming Soon",
+    description: "This project is currently in development. Stay tuned for updates!",
+    image: "icons/projects/coming-soon.png",
   },
 ];
 

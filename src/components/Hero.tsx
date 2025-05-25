@@ -1,16 +1,52 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const Hero: React.FC = () => {
+  const [isPortrait, setIsPortrait] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsPortrait(window.innerHeight > window.innerWidth);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const dynamicTitleStyle: React.CSSProperties = {
+    fontSize: isPortrait ? "6rem" : "10rem",
+  };
+
+  const dynamicIconStyle: React.CSSProperties = {
+    width: isPortrait ? "24px" : "32px",
+    height: isPortrait ? "24px" : "32px",
+  };
+
   return (
     <div style={styles.container}>
-      <div style={styles.leftBlock}>
-        <h1 style={styles.title}>KULJEET</h1>
-        <h1 style={styles.title}>SINGH</h1>
+
+      <div
+        style={{
+          ...styles.leftBlock,
+          ...(isPortrait ? styles.leftBlockPortrait : styles.leftBlockLandscape),
+        }}
+      >
+        <h1 style={{ ...styles.title, ...dynamicTitleStyle }}>KULJEET</h1>
+        <h1 style={{ ...styles.title, ...dynamicTitleStyle }}>SINGH</h1>
       </div>
 
-      <div style={styles.socialLinks}>
+      <div
+        style={{
+          ...styles.socialLinks,
+          ...(isPortrait ? styles.socialLinksPortrait : styles.socialLinksLandscape),
+        }}
+      >
         <a href="mailto:kuljeet.singh.dev@gmail.com" style={styles.socialButton}>
-          <img src="/icons/social/email.png" alt="Email" style={styles.iconImage} />
+          <img
+            src="/icons/social/email.png"
+            alt="Email"
+            style={{ ...styles.iconImage, ...dynamicIconStyle }}
+          />
         </a>
 
         <a
@@ -19,7 +55,11 @@ const Hero: React.FC = () => {
           rel="noopener noreferrer"
           style={styles.socialButton}
         >
-          <img src="/icons/social/github.png" alt="GitHub" style={styles.iconImage} />
+          <img
+            src="/icons/social/github.png"
+            alt="GitHub"
+            style={{ ...styles.iconImage, ...dynamicIconStyle }}
+          />
         </a>
 
         <a
@@ -28,7 +68,11 @@ const Hero: React.FC = () => {
           rel="noopener noreferrer"
           style={styles.socialButton}
         >
-          <img src="/icons/social/linkedin.png" alt="LinkedIn" style={styles.iconImage} />
+          <img
+            src="/icons/social/linkedin.png"
+            alt="LinkedIn"
+            style={{ ...styles.iconImage, ...dynamicIconStyle }}
+          />
         </a>
       </div>
     </div>
@@ -43,19 +87,29 @@ const styles: { [key: string]: React.CSSProperties } = {
     fontFamily: "'Tenkai', sans-serif",
     display: "flex",
     alignItems: "center",
-    justifyContent: "flex-start",
+    justifyContent: "center",
     padding: "0 5vw",
     color: "#fff",
     background: "transparent",
   },
+
   leftBlock: {
     position: "absolute",
+    minWidth: "300px",
+  },
+  leftBlockLandscape: {
     bottom: "5vh",
     left: "5vw",
-    minWidth:"300px"
+    textAlign: "left",
   },
+  leftBlockPortrait: {
+    bottom: "12vh",
+    left: "50%",
+    transform: "translateX(-50%)",
+    textAlign: "center",
+  },
+
   title: {
-    fontSize: "clamp(6rem, 8vw, 12rem)",
     fontWeight: 900,
     marginBottom: "1vh",
     fontFamily: "'Tenkai', sans-serif",
@@ -63,29 +117,36 @@ const styles: { [key: string]: React.CSSProperties } = {
     color: "#fff",
     lineHeight: 1,
   },
+
   socialLinks: {
     position: "absolute",
-    top: "50%",
-    right: "3vw",
-    transform: "translateY(-50%)",
-    display: "flex",
-    flexDirection: "column",
-    gap: "clamp(16px, 2vh, 32px)",
-    alignItems: "center",
     backgroundColor: "rgba(255, 255, 255, 0.05)",
     padding: "1vh",
     borderRadius: "1vh",
     backdropFilter: "blur(10px)",
     WebkitBackdropFilter: "blur(10px)",
+    display: "flex",
+    gap: "24px",
+    alignItems: "center",
   },
+  socialLinksLandscape: {
+    top: "50%",
+    right: "3vw",
+    transform: "translateY(-50%)",
+    flexDirection: "column",
+  },
+  socialLinksPortrait: {
+    bottom: "3vh",
+    left: "50%",
+    transform: "translateX(-50%)",
+    flexDirection: "row",
+  },
+
   socialButton: {
-    display: "inline-block",
     cursor: "pointer",
     transition: "transform 0.2s ease",
   },
   iconImage: {
-    width: "clamp(20px, 2vw, 32px)",
-    height: "clamp(20px, 2vw, 32px)",
     objectFit: "contain",
   },
 };

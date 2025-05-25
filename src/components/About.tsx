@@ -1,92 +1,140 @@
-import React, { Suspense, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls, useTexture } from "@react-three/drei";
-import * as THREE from "three";
+import React, { useEffect, useState, useMemo } from "react";
+
+type Position2D = { x: number; y: number; size?: number };
 
 const FloatingIcon: React.FC<{
-  url: string;
-  position: [number, number, number];
-  size?: number;
-}> = ({ url, position, size = 1.4 }) => {
-  const ref = useRef<THREE.Mesh>(null!);
-  const texture = useTexture(url);
+  src: string;
+  position: Position2D;
+  isPortrait: boolean;
+}> = ({ src, position, isPortrait }) => {
+  const [offsetY, setOffsetY] = useState(0);
+  const [rotation, setRotation] = useState(0);
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    if (ref.current) {
-      ref.current.position.y = position[1] + Math.sin(t + position[0]) * 0.2;
-      ref.current.rotation.z = Math.sin(t + position[0]) * 0.1;
-    }
-  });
+  useEffect(() => {
+    let animationFrameId: number;
+    let start: number | null = null;
+
+    const animate = (timestamp: number) => {
+      if (!start) start = timestamp;
+      const elapsed = timestamp - start;
+
+      const floatY = 10 * Math.sin((elapsed / 3000) * 2 * Math.PI + position.x);
+      const rotZ = 6 * Math.sin((elapsed / 3000) * 2 * Math.PI + position.x);
+
+      setOffsetY(floatY);
+      setRotation(rotZ);
+
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [position.x]);
+
+  const vwSize = position.size ? position.size * 5 : 5;
+
+  const sizeClamp = {
+    min: isPortrait ? 120 : 120,
+    max: isPortrait ? 150 : 180,
+  };
+
+  const width = `clamp(${sizeClamp.min}px, ${vwSize}vw, ${sizeClamp.max}px)`;
+  const height = width;
 
   return (
-    <mesh ref={ref} position={position}>
-      <planeGeometry args={[size, size]} />
-      <meshBasicMaterial map={texture} transparent />
-    </mesh>
+    <img
+      src={src}
+      alt=""
+      style={{
+        position: "absolute",
+        top: `calc(50vh + ${position.y}vh - 3vh)`,
+        left: `calc(50vw + ${position.x}vw)`,
+        width,
+        height,
+        transform: `translateY(${offsetY}px) rotate(${rotation}deg)`,
+        userSelect: "none",
+        pointerEvents: "none",
+      }}
+      draggable={false}
+    />
   );
 };
 
-const FloatingBackground = () => {
-  const circlePositions = [
-    [-5, 1.5, 0],
-    [-5, -2, 0],
-    [-6.5, -0.2, 0],
-    [6, 1, 0],
-    [4, 2, 0],
-    [5,-1.8, 0],
-  ];
-
-  const circleSizes = [0.3, 0.7, 1];
+const FloatingBackground: React.FC<{
+  iconPositions: Position2D[];
+  isPortrait: boolean;
+}> = ({ iconPositions, isPortrait }) => {
+  const iconSize = isPortrait ? 0.2 : 2.2;
 
   return (
-    <Canvas
+    <div
       style={{
         position: "absolute",
         top: 0,
         left: 0,
+        width: "100vw",
+        height: "100vh",
+        overflow: "hidden",
         zIndex: 0,
+        pointerEvents: "none",
       }}
-      camera={{ position: [0, 0, 5], fov: 75 }}
     >
-      <ambientLight />
-      <Suspense fallback={null}>
-        {/* Main Icons */}
-        <FloatingIcon url="/icons/about/coffee.png" position={[-5, 0, 0]} />
-        <FloatingIcon url="/icons/about/mug.png" position={[5, 0, 0]} />
-
-        {/* Floating Circles */}
-        {circlePositions.map((pos, index) => (
-          <FloatingIcon
-            key={`circle-${index}`}
-            url="/icons/about/circle.png"
-            position={pos as [number, number, number]}
-            size={circleSizes[index % circleSizes.length]}
-          />
-        ))}
-      </Suspense>
-      <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
-    </Canvas>
+      {iconPositions.map((pos, i) => (
+        <FloatingIcon
+          key={`icon-${i}`}
+          src={`/icons/about/${i === 0 ? "coffee" : "mug"}.png`}
+          position={{ ...pos, size: iconSize }}
+          isPortrait={isPortrait}
+        />
+      ))}
+    </div>
   );
 };
 
 const About: React.FC = () => {
+  const [isPortrait, setIsPortrait] = useState(
+    window.innerHeight > window.innerWidth
+  );
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsPortrait(window.innerHeight > window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const iconPositions = useMemo<Position2D[]>(
+    () =>
+      isPortrait
+        ? [
+            { x: -10, y: -35 },
+            { x: -10, y: 35 },
+          ]
+        : [
+            { x: -40, y: 0 },
+            { x: 30, y: 0 },
+          ],
+    [isPortrait]
+  );
+
   return (
     <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
-      <FloatingBackground />
+      <FloatingBackground iconPositions={iconPositions} isPortrait={isPortrait} />
       <div style={styles.wrapper}>
         <div style={styles.container}>
           <h1 style={styles.greeting}>Hi there</h1>
           <p style={styles.text}>
-            I’m Kuljeet Singh, a passionate web developer specializing in building beautiful and performant web applications using React and TypeScript.
-            I love crafting clean, modern UI and enjoy solving complex problems with elegant code.
+            I’m Kuljeet Singh, a passionate web developer specializing in
+            building beautiful and performant web applications using React and
+            TypeScript. I love crafting clean, modern UI and enjoy solving
+            complex problems with elegant code.
           </p>
         </div>
       </div>
     </div>
   );
 };
-
 const styles: { [key: string]: React.CSSProperties } = {
   wrapper: {
     height: "100vh",
@@ -96,43 +144,37 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     position: "relative",
     zIndex: 1,
+    padding: "1rem",
+    boxSizing: "border-box",
   },
   container: {
-  width: "50vw",
-  minWidth: "400px",
-  minHeight: "200px",
-  height: "30vh",
-  padding: "2vh",
-  borderRadius: "1.6vh",
-  backgroundColor: "rgba(255, 255, 255, 0.05)",
-  backdropFilter: "blur(10px)",
-  WebkitBackdropFilter: "blur(10px)",
-  color: "#ccc",
-  boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.1)",
-  overflow: "hidden",
-  display: "flex",
-  flexDirection:"column",
-  alignItems: "center",
-  justifyContent: "center",
-  textAlign: "center",
-},
-
-
+    width: "50vw",
+    minWidth: "300px",
+    padding: "2vh",
+    borderRadius: "1.6vh",
+    backgroundColor: "rgba(255, 255, 255, 0.05)",
+    backdropFilter: "blur(10px)",
+    WebkitBackdropFilter: "blur(10px)",
+    color: "#ccc",
+    boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.1)",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    textAlign: "center",
+  },
   greeting: {
-  fontFamily: "'Tenkai', sans-serif",
-  fontSize: "clamp(1.5rem, 2vw + 1vh, 3rem)",
-  marginBottom: "24px",
-  color: "#fff",
-  letterSpacing: "2px",
-  textAlign: "center",
-},
-text: {
-  fontSize: "clamp(1rem, 2vw + 1vh, 1.2rem)",
-  lineHeight: 1.6,
-  color: "#ddd",
-  textAlign: "center",
-}
-
+    fontFamily: "'Tenkai', sans-serif",
+    fontSize: "clamp(1.5rem, 2vw + 1vh, 3rem)",
+    marginBottom: "24px",
+    color: "#fff",
+    letterSpacing: "2px",
+  },
+  text: {
+    fontSize: "clamp(1rem, 2vw + 1vh, 1.2rem)",
+    lineHeight: 1.6,
+    color: "#ddd",
+  },
 };
 
 export default About;
