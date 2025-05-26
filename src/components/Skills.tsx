@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TechStack from "./TechStack";
 
-const Tech: React.FC = () => {
+const Skills: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(false);
 
   useEffect(() => {
@@ -93,4 +93,4 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-export default Tech;
+export default Skills;

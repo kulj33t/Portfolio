@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import About from "./components/About";
 import EduExp from "./components/EduExp";
-import Tech from "./components/Tech";
+import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import "./App.css";
 
@@ -31,7 +31,7 @@ const App: React.FC = () => {
         </section>
 
         <section id="Tech">
-          <Tech/>
+          <Skills/>
         </section>
 
         <section id="Project">
