@@ -187,7 +187,6 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     position: "relative",
     zIndex: 1,
-    padding: "2rem",
     boxSizing: "border-box",
   },
   container: {
@@ -195,7 +194,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     height: "80vh",
     minWidth: "350px",
     minHeight: "200px",
-    padding: "2vh",
+    padding: "3rem",
     borderRadius: "1.6vh",
     backgroundColor: "rgba(255, 255, 255, 0.05)",
     backdropFilter: "blur(10px)",
