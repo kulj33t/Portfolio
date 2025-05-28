@@ -208,7 +208,10 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "flex-start",
     justifyContent: "flex-start",
     textAlign: "left",
+    scrollbarWidth: "none",
+    msOverflowStyle: "none",      
   },
+
   heading: {
     fontFamily: "'Tenkai', sans-serif",
     fontSize: "clamp(1.5rem, 2vw + 1vh, 3rem)",
