@@ -21,7 +21,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     left: "50%",
     transform: "translateX(-50%)",
     zIndex: 100,
-    width: "clamp(280px, 60vw, 800px)", // responsive width with a min/max
+    width: "clamp(280px, 60vw, 800px)",
     borderRadius: "1.2vh",
     overflow: "hidden",
   },
@@ -46,7 +46,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   nav: {
     display: "flex",
-    gap: "clamp(1rem, 3vw, 3rem)", // Responsive gap
+    gap: "clamp(1rem, 3vw, 3rem)", 
   },
   link: {
     color: "#ccc",

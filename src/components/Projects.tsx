@@ -64,7 +64,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
   },
   wrapper: {
-    width: "100%",
+    width: "70vw",
     maxWidth: "1200px",
     display: "flex",
     flexDirection: "column",

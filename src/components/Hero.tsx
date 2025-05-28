@@ -14,7 +14,7 @@ const Hero: React.FC = () => {
   }, []);
 
   const dynamicTitleStyle: React.CSSProperties = {
-    fontSize: isPortrait ? "6rem" : "10rem",
+    fontSize: isPortrait ? "4rem" : "8rem",
   };
 
   const dynamicIconStyle: React.CSSProperties = {

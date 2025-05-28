@@ -171,7 +171,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     letterSpacing: "2px",
   },
   text: {
-    fontSize: "clamp(1rem, 2vw + 1vh, 1.2rem)",
+    fontSize: "clamp(0.8rem, 2vw + 1vh, 1.2rem)",
     lineHeight: 1.6,
     color: "#ddd",
   },

@@ -148,11 +148,11 @@ const EduExp: React.FC = () => {
       title="Intermediate"
       description="Completed from JNV Basohli, Kathua (J&K), with a focus on science and mathematics."
     />
-    {/* <TimelineItem
+    <TimelineItem
       year="2020"
       title="Matriculation"
       description="Completed from JNV Basohli, Kathua (J&K), with a focus on core academic subjects."
-    /> */}
+    />
   </div>
 </div>
 
@@ -187,12 +187,14 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
     position: "relative",
     zIndex: 1,
+    padding: "2rem",
+    boxSizing: "border-box",
   },
   container: {
     width: "50vw",
-    minWidth: "400px",
+    height: "80vh",
+    minWidth: "350px",
     minHeight: "200px",
-    height: "auto",
     padding: "2vh",
     borderRadius: "1.6vh",
     backgroundColor: "rgba(255, 255, 255, 0.05)",
@@ -200,7 +202,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     WebkitBackdropFilter: "blur(10px)",
     color: "#ccc",
     boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.1)",
-    overflow: "hidden",
+    overflow: "scroll",
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
@@ -210,7 +212,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   heading: {
     fontFamily: "'Tenkai', sans-serif",
     fontSize: "clamp(1.5rem, 2vw + 1vh, 3rem)",
-    marginBottom: "2vh",
+    marginBottom: "3vh",
     color: "#fff",
     letterSpacing: "2px",
     textAlign: "center",
@@ -219,11 +221,11 @@ const styles: { [key: string]: React.CSSProperties } = {
   sectionTitle: {
     fontSize: "clamp(1.2rem, 1.8vw + 1vh, 2rem)",
     color: "#fff",
-    marginBottom: "2vh",
+    marginBottom: "3vh",
     fontFamily: "'Tenkai', sans-serif",
   },
   timelineSection: {
-    marginBottom: "3vh",
+    marginBottom: "1vh",
     width: "100%",
   },
   timeline: {
@@ -246,21 +248,21 @@ const styles: { [key: string]: React.CSSProperties } = {
     border: "3px solid #fff",
   },
   timelineContent: {
-    paddingLeft: "20px",
+    paddingLeft: "10px",
   },
   itemTitle: {
-    fontSize: "clamp(1rem, 1.2vw + 1vh, 1.4rem)",
+    fontSize: "clamp(1.2rem, 1.2vw + 1vh, 1.4rem)",
     color: "#fff",
     marginBottom: "0.5vh",
   },
   itemYear: {
-    fontSize: "clamp(0.8rem, 1vw + 0.5vh, 1rem)",
+    fontSize: "clamp(0.9rem, 1vw + 0.5vh, 1rem)",
     color: "#aaa",
     marginBottom: "1vh",
     display: "block",
   },
   itemDescription: {
-    fontSize: "clamp(0.9rem, 1vw + 0.5vh, 1.1rem)",
+    fontSize: "clamp(0.9rem, 1vw + 0.5vh, 1rem)",
     lineHeight: 1.6,
     color: "#ddd",
     textAlign: "left",
