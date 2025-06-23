@@ -74,10 +74,10 @@ const FloatingBackgroundEdu: React.FC = () => {
   if (isPortrait) return null;
 
   const iconPositions: Position2D[] = [
-    { x: -38, y: 24, size:3 },   // tools
-    { x: -42, y: -28, size: 4  }, // books
-    { x: 30, y: 24, size: 3 },    // hat
-    { x: 30, y: -22, size: 1 },  // certificate
+    { x: -38, y: 24, size:3 }, 
+    { x: -42, y: -28, size: 4  }, 
+    { x: 30, y: 24, size: 3 },  
+    { x: 30, y: -22, size: 1 },
   ];
 
   const iconSrcs = [
