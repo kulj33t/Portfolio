@@ -2,19 +2,19 @@ import React, { useRef } from 'react';
 import { motion, useInView } from 'framer-motion';
 
 const skills = [
-  { name: 'User Research', icon: '/icons/user-research.png' },
-  { name: 'Journey Mapping', icon: '/icons/journey-mapping.png' },
-  { name: 'Information Architecture', icon: '/icons/information-architecture.png' },
-  { name: 'Wireframing ', icon: '/icons/wireframing.png' },
-  { name: 'Prototyping & User Flow', icon: '/icons/prototyping.png' },
-  { name: 'Usability Testing', icon: '/icons/usability-testing.png' },
-  { name: 'UI & Visual Design', icon: '/icons/ui-design.png' },
-  { name: 'Design System', icon: '/icons/design-system.png' },
-  { name: 'Interaction Design', icon: '/icons/interaction-design.png' },
-  { name: 'Web & Mobile Responsive', icon: '/icons/responsive.png' },
-  { name: 'Branding', icon: '/icons/branding.png' },
-  { name: 'Illustration', icon: '/icons/illustration.png' },
-  { name: 'Content', icon: '/icons/content.png' },
+  { name: 'React.js', icon: '/icons/react.png' },
+  { name: 'React Native', icon: '/icons/react-native.png' },
+  { name: 'Tailwind CSS', icon: '/icons/tailwind.png' },
+  { name: 'JavaScript / TypeScript', icon: '/icons/js-ts.png' },
+  { name: 'Figma', icon: '/icons/figma.png' },
+  { name: 'Framer', icon: '/icons/framer.png' },
+  { name: 'UI/UX Design', icon: '/icons/uiux.png' },
+  { name: 'Wireframing', icon: '/icons/wireframing.png' },
+  { name: 'Prototyping', icon: '/icons/prototyping.png' },
+  { name: 'Git & Version Control', icon: '/icons/git.png' },
+  { name: 'Responsive Design', icon: '/icons/responsive.png' },
+  { name: 'Linux', icon: '/icons/components.png' },
+  { name: 'API Integration', icon: '/icons/api.png' },
 ];
 
 const TechStack: React.FC = () => {
