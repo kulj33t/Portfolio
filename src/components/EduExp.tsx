@@ -59,7 +59,6 @@ const EduExp: React.FC = () => {
   return (
     <div style={styles.wrapper}>
       <section style={styles.container}>
-        {/* Tab Navigation */}
         <div style={styles.tabContainer}>
           <div style={styles.tabWrapper}>
             {activeTab === "Experience" && (
@@ -112,7 +111,6 @@ const EduExp: React.FC = () => {
           </div>
         </div>
 
-        {/* Content Container */}
         <div style={styles.contentContainer}>
           <div
             style={{
@@ -149,7 +147,7 @@ const EduExp: React.FC = () => {
   );
 };
 
-// --- UPDATED STYLES WITH INCREASED FONT SIZE ---
+
 const styles: { [key: string]: React.CSSProperties } = {
   wrapper: {
     height: "100vh",
@@ -194,6 +192,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     alignItems: "center",
   },
   tabButton: {
+    fontFamily: "'Tenkai', sans-serif",
     background: "none",
     border: "none",
     cursor: "pointer",
@@ -289,7 +288,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
 };
 
-// Smooth blink animation
+
 const styleSheet = document.createElement("style");
 styleSheet.type = "text/css";
 styleSheet.innerText = `
