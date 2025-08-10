@@ -1,0 +1,115 @@
+/* Hero.css */
+
+/* Main container */
+.hero-container {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  font-family: "Tenkai", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5vw;
+  color: #fff;
+  background: #000;
+}
+
+/* Canvas wrapper for 3D scene */
+.canvas-wrapper {
+  position: absolute;
+  z-index: 1;
+  pointer-events: auto;
+  will-change: transform;
+}
+
+/* Canvas size in landscape mode */
+.canvas-wrapper.landscape {
+  right: 6vw;
+  top: 12vh;
+  width: 40vw; /* adjust for desired size */
+  height: 60vh;
+}
+
+/* Canvas size in portrait mode */
+.canvas-wrapper.portrait {
+  left: 50%;
+  transform: translateX(-50%);
+  top: 14vh;
+  width: 70vw;
+  height: 36vh;
+}
+
+/* Title block positioning */
+.title-block {
+  position: absolute;
+  min-width: 300px;
+  z-index: 3;
+}
+
+.title-block.landscape {
+  bottom: 5vh;
+  left: 5vw;
+  text-align: left;
+}
+
+.title-block.portrait {
+  bottom: 12vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+}
+
+/* Title text */
+.hero-title {
+  font-weight: 900;
+  margin-bottom: 1vh;
+  font-family: "Tenkai", sans-serif;
+  letter-spacing: 3px;
+  color: #fff;
+  line-height: 1;
+  font-size: 8rem; /* adjust for your liking */
+}
+
+/* Social links container */
+.social-links {
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1vh;
+  border-radius: 1vh;
+  backdrop-filter: blur(10px);
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  z-index: 4;
+}
+
+.social-links.landscape {
+  top: 50%;
+  right: 3vw;
+  transform: translateY(-50%);
+  flex-direction: column;
+}
+
+.social-links.portrait {
+  bottom: 3vh;
+  left: 50%;
+  transform: translateX(-50%);
+  flex-direction: row;
+}
+
+/* Social button hover effect */
+.social-button {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.social-button:hover {
+  transform: scale(1.1);
+}
+
+/* Social icons */
+.social-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}

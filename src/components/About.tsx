@@ -148,7 +148,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     boxSizing: "border-box",
   },
   container: {
-    width: "50vw",
+    width: "40vw",
     minWidth: "300px",
     padding: "2vh",
     borderRadius: "1.6vh",

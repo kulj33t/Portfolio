@@ -1,122 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
-type Position2D = { x: number; y: number; size?: number };
+type TabType = "Education" | "Experience";
 
-const FloatingIcon: React.FC<{
-  src: string;
-  position: Position2D;
-  isPortrait: boolean;
-}> = ({ src, position, isPortrait }) => {
-  const [offsetY, setOffsetY] = useState(0);
-  const [rotation, setRotation] = useState(0);
-
-  useEffect(() => {
-    let animationFrameId: number;
-    let start: number | null = null;
-
-    const animate = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const elapsed = timestamp - start;
-
-      const floatY = 10 * Math.sin((elapsed / 3000) * 2 * Math.PI + position.x);
-      const rotZ = 6 * Math.sin((elapsed / 3000) * 2 * Math.PI + position.x);
-
-      setOffsetY(floatY);
-      setRotation(rotZ);
-
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animationFrameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [position.x]);
-
-  const vwSize = position.size ? position.size * 5 : 5;
-
-  const sizeClamp = {
-    min: isPortrait ? 120 : 120,
-    max: isPortrait ? 150 : 180,
-  };
-
-  const width = `clamp(${sizeClamp.min}px, ${vwSize}vw, ${sizeClamp.max}px)`;
-  const height = width;
-
-  return (
-    <img
-      src={src}
-      alt=""
-      style={{
-        position: "absolute",
-        top: `calc(50vh + ${position.y}vh - 3vh)`,
-        left: `calc(50vw + ${position.x}vw)`,
-        width,
-        height,
-        transform: `translateY(${offsetY}px) rotate(${rotation}deg)`,
-        userSelect: "none",
-        pointerEvents: "none",
-      }}
-      draggable={false}
-    />
-  );
-};
-
-const FloatingBackgroundEdu: React.FC = () => {
-  const [isPortrait, setIsPortrait] = useState(window.innerHeight > window.innerWidth);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsPortrait(window.innerHeight > window.innerWidth);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  if (isPortrait) return null;
-
-  const iconPositions: Position2D[] = [
-    { x: -38, y: 24, size:3 }, 
-    { x: -42, y: -28, size: 4  }, 
-    { x: 30, y: 24, size: 3 },  
-    { x: 30, y: -22, size: 1 },
-  ];
-
-  const iconSrcs = [
-    "/icons/edu/tools.png",
-    "/icons/edu/books.png",
-    "/icons/edu/hat.png",
-    "/icons/edu/certificate.png",
-  ];
-
-  return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-        zIndex: 0,
-        pointerEvents: "none",
-      }}
-    >
-      {iconPositions.map((pos, i) => (
-        <FloatingIcon
-          key={`edu-icon-${i}`}
-          src={iconSrcs[i]}
-          position={pos}
-          isPortrait={isPortrait}
-        />
-      ))}
-    </div>
-  );
-};
-
-const TimelineItem: React.FC<{ year: string; title: string; description: string }> = ({
-  year,
-  title,
-  description,
-}) => (
+const TimelineItem: React.FC<{
+  year: string;
+  title: string;
+  description: string;
+}> = ({ year, title, description }) => (
   <div style={styles.timelineItem}>
     <div style={styles.timelineDot}></div>
     <div style={styles.timelineContent}>
@@ -128,56 +18,138 @@ const TimelineItem: React.FC<{ year: string; title: string; description: string 
 );
 
 const EduExp: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<TabType>("Education");
+
+  const educationData = [
+    {
+      year: "2023 - 2027",
+      title: "B.Tech in Information Technology",
+      description:
+        "Currently pursuing B.Tech from BIT Sindri with a focus on software development and data structures.",
+    },
+    {
+      year: "2022",
+      title: "Intermediate",
+      description:
+        "Completed from JNV Basohli, Kathua (J&K), with a focus on science and mathematics.",
+    },
+    {
+      year: "2020",
+      title: "Matriculation",
+      description:
+        "Completed from JNV Basohli, Kathua (J&K), with a focus on core academic subjects.",
+    },
+  ];
+
+  const experienceData = [
+    {
+      year: "May 2025",
+      title: "Finalist at HACKATRON, HNCC BIT Sindri",
+      description:
+        "Competed in a highly competitive hackathon, showcasing problem-solving skills and innovation in software development.",
+    },
+    {
+      year: "2025",
+      title: "Internship",
+      description:
+        "Details of internship responsibilities and projects will be provided soon.",
+    },
+  ];
+
   return (
-    <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
-      <FloatingBackgroundEdu />
-      <div style={styles.wrapper}>
-        <section style={styles.container}>
-          <h1 style={styles.heading}>Education & Experience</h1>
+    <div style={styles.wrapper}>
+      <section style={styles.container}>
+        {/* Tab Navigation */}
+        <div style={styles.tabContainer}>
+          <div style={styles.tabWrapper}>
+            {activeTab === "Experience" && (
+              <span
+                aria-hidden
+                style={{
+                  ...styles.triangle,
+                  left: "-1.25rem",
+                }}
+              >
+                ▶
+              </span>
+            )}
+            <button
+              style={{
+                ...styles.tabButton,
+                ...(activeTab === "Education"
+                  ? styles.activeTab
+                  : styles.inactiveTab),
+              }}
+              onClick={() => setActiveTab("Education")}
+            >
+              Education
+            </button>
+          </div>
 
-         <div style={styles.timelineSection}>
-  <h2 style={styles.sectionTitle}>Education</h2>
-  <div style={styles.timeline}>
-    <TimelineItem
-      year="2023 - 2027"
-      title="B.Tech in Information Technology"
-      description="Currently pursuing B.Tech from BIT Sindri with a focus on software development and data structures."
-    />
-    <TimelineItem
-      year="2022"
-      title="Intermediate"
-      description="Completed from JNV Basohli, Kathua (J&K), with a focus on science and mathematics."
-    />
-    <TimelineItem
-      year="2020"
-      title="Matriculation"
-      description="Completed from JNV Basohli, Kathua (J&K), with a focus on core academic subjects."
-    />
-  </div>
-</div>
+          <div style={styles.tabWrapper}>
+            {activeTab === "Education" && (
+              <span
+                aria-hidden
+                style={{
+                  ...styles.triangle,
+                  right: "-1.25rem",
+                }}
+              >
+                ◀
+              </span>
+            )}
+            <button
+              style={{
+                ...styles.tabButton,
+                ...(activeTab === "Experience"
+                  ? styles.activeTab
+                  : styles.inactiveTab),
+              }}
+              onClick={() => setActiveTab("Experience")}
+            >
+              Experience
+            </button>
+          </div>
+        </div>
 
-<div style={styles.timelineSection}>
-  <h2 style={styles.sectionTitle}>Experience</h2>
-  <div style={styles.timeline}>
-    <TimelineItem
-      year="May 2025"
-      title="Finalist at HACKATRON, HNCC BIT Sindri"
-      description="Competed in a highly competitive hackathon, showcasing problem-solving skills and innovation in software development."
-    />
-    <TimelineItem
-      year="2025"
-      title="Internship"
-      description="Details of internship responsibilities and projects will be provided soon."
-    />
-  </div>
-</div>
+        {/* Content Container */}
+        <div style={styles.contentContainer}>
+          <div
+            style={{
+              ...styles.timelineContainer,
+              ...(activeTab === "Education"
+                ? styles.activeContent
+                : styles.hiddenContent),
+            }}
+          >
+            <div style={styles.timeline}>
+              {educationData.map((item, index) => (
+                <TimelineItem key={`edu-${index}`} {...item} />
+              ))}
+            </div>
+          </div>
 
-        </section>
-      </div>
+          <div
+            style={{
+              ...styles.timelineContainer,
+              ...(activeTab === "Experience"
+                ? styles.activeContent
+                : styles.hiddenContent),
+            }}
+          >
+            <div style={styles.timeline}>
+              {experienceData.map((item, index) => (
+                <TimelineItem key={`exp-${index}`} {...item} />
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
 
+// --- UPDATED STYLES WITH INCREASED FONT SIZE ---
 const styles: { [key: string]: React.CSSProperties } = {
   wrapper: {
     height: "100vh",
@@ -186,12 +158,11 @@ const styles: { [key: string]: React.CSSProperties } = {
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    zIndex: 1,
     boxSizing: "border-box",
   },
   container: {
     width: "50vw",
-    height: "80vh",
+    height: "70vh",
     minWidth: "350px",
     minHeight: "200px",
     padding: "3rem",
@@ -201,39 +172,86 @@ const styles: { [key: string]: React.CSSProperties } = {
     WebkitBackdropFilter: "blur(10px)",
     color: "#ccc",
     boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.1)",
-    overflow: "scroll",
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-start",
+    alignItems: "center",
     justifyContent: "flex-start",
     textAlign: "left",
+    overflow: "visible",
+    fontSize: "1.1rem", 
+  },
+  tabContainer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: "8vh",
+    width: "100%",
+    position: "relative",
+  },
+  tabWrapper: {
+    position: "relative",
+    display: "flex",
+    alignItems: "center",
+  },
+  tabButton: {
+    background: "none",
+    border: "none",
+    cursor: "pointer",
+    padding: "0.5rem 0.8rem",
+    margin: 0,
+    transition: "color 0.25s ease, border-bottom 0.25s ease, font-size 0.25s ease",
+    borderBottom: "2px solid transparent",
+    whiteSpace: "nowrap",
+  },
+  activeTab: {
+    color: "#fff",
+    borderBottom: "2px solid #fff",
+    fontSize: "calc(clamp(1.2rem, 1.8vw + 0.6vh, 1.4rem) + 4px)",
+  },
+  inactiveTab: {
+    color: "rgba(255,255,255,0.4)",
+    fontSize: "clamp(1.2rem, 1.8vw + 0.6vh, 1.4rem)",
+  },
+  triangle: {
+    position: "absolute",
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: "#fff",
+    fontSize: "1em",
+    pointerEvents: "none",
+    animation: "smoothBlink 1.6s ease-in-out infinite",
+  },
+  contentContainer: {
+    width: "100%",
+    flex: 1,
+    position: "relative",
+    overflow: "hidden",
+  },
+  timelineContainer: {
+    position: "absolute",
+    width: "100%",
+    height: "100%",
+    transition: "all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+    overflowY: "auto",
     scrollbarWidth: "none",
-    msOverflowStyle: "none",      
+    msOverflowStyle: "none",
+    paddingInline: "10px",
   },
-
-  heading: {
-    fontFamily: "'Tenkai', sans-serif",
-    fontSize: "clamp(1.5rem, 2vw + 1vh, 3rem)",
-    marginBottom: "3vh",
-    color: "#fff",
-    letterSpacing: "2px",
-    textAlign: "center",
-    width: "100%",
+  activeContent: {
+    transform: "translateX(0)",
+    opacity: 1,
+    visibility: "visible",
   },
-  sectionTitle: {
-    fontSize: "clamp(1.2rem, 1.8vw + 1vh, 2rem)",
-    color: "#fff",
-    marginBottom: "3vh",
-    fontFamily: "'Tenkai', sans-serif",
-  },
-  timelineSection: {
-    marginBottom: "1vh",
-    width: "100%",
+  hiddenContent: {
+    transform: "translateX(100%)",
+    opacity: 0,
+    visibility: "hidden",
   },
   timeline: {
     borderLeft: "2px solid #ccc",
-    paddingLeft: "30px",
+    paddingLeft: "50px",
     position: "relative",
+    paddingRight: "1rem",
   },
   timelineItem: {
     position: "relative",
@@ -241,7 +259,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   timelineDot: {
     position: "absolute",
-    left: "-40px",
+    left: "-60px",
     top: "0",
     width: "18px",
     height: "18px",
@@ -253,22 +271,33 @@ const styles: { [key: string]: React.CSSProperties } = {
     paddingLeft: "10px",
   },
   itemTitle: {
-    fontSize: "clamp(1.2rem, 1.2vw + 1vh, 1.4rem)",
+    fontSize: "clamp(1.4rem, 1.5vw + 1vh, 1.6rem)",
     color: "#fff",
     marginBottom: "0.5vh",
   },
   itemYear: {
-    fontSize: "clamp(0.9rem, 1vw + 0.5vh, 1rem)",
+    fontSize: "clamp(1rem, 1.1vw + 0.6vh, 1.2rem)",
     color: "#aaa",
     marginBottom: "1vh",
     display: "block",
   },
   itemDescription: {
-    fontSize: "clamp(0.9rem, 1vw + 0.5vh, 1rem)",
-    lineHeight: 1.6,
+    fontSize: "clamp(1rem, 1.2vw + 0.6vh, 1.2rem)",
+    lineHeight: 1.7,
     color: "#ddd",
     textAlign: "left",
   },
 };
+
+// Smooth blink animation
+const styleSheet = document.createElement("style");
+styleSheet.type = "text/css";
+styleSheet.innerText = `
+  @keyframes smoothBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+`;
+document.head.appendChild(styleSheet);
 
 export default EduExp;

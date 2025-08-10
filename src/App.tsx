@@ -26,12 +26,12 @@ const App: React.FC = () => {
           <About/>
         </section>
 
-        <section id="EduExp">
-          <EduExp/>
-        </section>
-
         <section id="Tech">
           <Skills/>
+        </section>
+
+        <section id="EduExp">
+          <EduExp/>
         </section>
 
         <section id="Project">
