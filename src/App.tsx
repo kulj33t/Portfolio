@@ -4,9 +4,9 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import About from "./components/About";
-import EduExp from "./components/EduExp";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
+import ResumeBtn from "./components/ReumeBtn";
 import "./App.css";
 
 const App: React.FC = () => {
@@ -30,10 +30,6 @@ const App: React.FC = () => {
           <Skills/>
         </section>
 
-        {/* <section id="EduExp">
-          <EduExp/>
-        </section> */}
-
         <section id="Project">
           <Projects/>
         </section>
@@ -41,6 +37,8 @@ const App: React.FC = () => {
         <section id="footer">
           <Footer/>
         </section>
+
+          <ResumeBtn/>
       </main>
     </div>
   );
