@@ -30,9 +30,9 @@ const App: React.FC = () => {
           <Skills/>
         </section>
 
-        <section id="EduExp">
+        {/* <section id="EduExp">
           <EduExp/>
-        </section>
+        </section> */}
 
         <section id="Project">
           <Projects/>
