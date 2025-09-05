@@ -38,7 +38,7 @@ const App: React.FC = () => {
           <Footer/>
         </section>
 
-          <ResumeBtn/>
+        <ResumeBtn/>
       </main>
     </div>
   );
