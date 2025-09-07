@@ -217,7 +217,7 @@ const styles: { [key: string]: React.CSSProperties } = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "black",
+    backgroundColor: "rgba(0, 0, 0, 0.8)"
   },
   wrapper: {
     width: "90%",
