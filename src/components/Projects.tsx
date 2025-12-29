@@ -17,6 +17,15 @@ const projects: Project[] = [
     url: "https://lechat-public.vercel.app",
     github: "https://github.com/kulj33t/LeChat",
   },
+
+  {
+    title: "RateIt",
+    description:
+      "A full-stack MERN application for tracking and ranking TV series. Features a unique S-Tier to F-Tier rating system, real-time community consensus charts, and a personalized library dashboard. Built with React, Tailwind CSS, Framer Motion, and a robust Node/Express backend.",
+    image: "icons/projects/rateit.png",
+    url: "https://rateitorhateit.vercel.app", 
+    github: "https://github.com/kulj33t/rateitorhateit",
+  },
   {
     title: "AI ChatBot Assistant",
     description:
@@ -25,6 +34,7 @@ const projects: Project[] = [
     url: "https://chatbot-public.vercel.app",
     github: "https://github.com/kulj33t/Chatbot",
   },
+  
   {
     title: "AttendX",
     description:
@@ -41,6 +51,8 @@ const projects: Project[] = [
     url: "https://kuljeet.vercel.app",
     github: "https://github.com/kulj33t/Portfolio",
   },
+  
+
 ];
 
 const Projects: React.FC = () => {
