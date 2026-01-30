@@ -166,7 +166,7 @@ const Hero: React.FC = () => {
             : styles.socialLinksLandscape),
         }}
       >
-        <a href="mailto:kuljeet.singh.dev@gmail.com" style={styles.socialButton}>
+        <a href="mailto:kulj33tsingh@gmail.com" style={styles.socialButton}>
           <img
             src="/icons/social/email.png"
             alt="Email"
