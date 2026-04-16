@@ -17,7 +17,6 @@ const projects: Project[] = [
     url: "https://lechat-public.vercel.app",
     github: "https://github.com/kulj33t/LeChat",
   },
-
   {
     title: "RateIt",
     description:
@@ -25,6 +24,13 @@ const projects: Project[] = [
     image: "icons/projects/rateit.png",
     url: "https://rateitorhateit.vercel.app", 
     github: "https://github.com/kulj33t/rateitorhateit",
+  },
+   {
+    title: "Linux Customization & Dotfiles",
+    description:
+      "Personal configuration files for a custom Linux desktop experience, featuring tailored setups for Waybar, wofi, and custom Python GTK tools for system management.",
+    image: "icons/projects/linux.png",
+    github: "https://github.com/kulj33t/dotfiles",
   },
   {
     title: "AI ChatBot Assistant",
@@ -34,13 +40,11 @@ const projects: Project[] = [
     url: "https://chatbot-public.vercel.app",
     github: "https://github.com/kulj33t/Chatbot",
   },
-  
   {
     title: "AttendX",
     description:
       "Geolocation-based attendance app built with React Native, Expo, and Figma for UI/Frontend design.",
     image: "icons/projects/attendx.png",
-    url: "https://github.com/kulj33t/AttendX",
     github: "https://github.com/kulj33t/AttendX",
   },
   {
@@ -51,8 +55,6 @@ const projects: Project[] = [
     url: "https://kuljeet.vercel.app",
     github: "https://github.com/kulj33t/Portfolio",
   },
-  
-
 ];
 
 const Projects: React.FC = () => {
