@@ -10,6 +10,23 @@ type Project = {
 
 const projects: Project[] = [
   {
+  title: "CareerCopilot: AI Interview Preparation Platform",
+  description:
+    "AI-powered career platform with resume analysis, job description matching, mock interviews, DSA practice, and personalized interview preparation.",
+  image: "icons/projects/careercopilot.png",
+  url: "https://careercopilot-kuljeet.vercel.app",
+  github: "https://github.com/kulj33t/CareerCopilot",
+},
+
+ {
+    title: "Linux Customization & Dotfiles",
+    description:
+      "Personal configuration files for a custom Linux desktop experience, featuring tailored setups for Waybar, wofi, and custom Python GTK tools for system management.",
+    image: "icons/projects/linux.png",
+    github: "https://github.com/kulj33t/dotfiles",
+  },
+  {
+    
     title: "LeChat: Real-Time Chat Application",
     description:
       "Full-stack real-time chat app with Socket.IO, JWT authentication, role-based access, and Cloudinary uploads.",
@@ -24,13 +41,6 @@ const projects: Project[] = [
     image: "icons/projects/rateit.png",
     url: "https://rateitorhateit.vercel.app", 
     github: "https://github.com/kulj33t/rateitorhateit",
-  },
-   {
-    title: "Linux Customization & Dotfiles",
-    description:
-      "Personal configuration files for a custom Linux desktop experience, featuring tailored setups for Waybar, wofi, and custom Python GTK tools for system management.",
-    image: "icons/projects/linux.png",
-    github: "https://github.com/kulj33t/dotfiles",
   },
   {
     title: "AI ChatBot Assistant",
