@@ -1,4 +1,5 @@
 @import "tailwindcss";
+
 @font-face {
   font-family: 'Tenkai';
   src: url('/fonts/Tenkai.otf') format('opentype');
@@ -6,32 +7,34 @@
   font-style: normal;
 }
 
-
-
 html,
 body,
 #root {
   height: 100%;
   width: 100%;
+  margin: 0;
+  background-color: black;
+  color: white;
   font-family: Arial, sans-serif;
   overflow-x: hidden;
   scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
 }
 
 .app-container {
   position: relative;
   z-index: 0;
   min-height: 100vh;
-  min-width: 100vh;
+  width: 100%;
 }
 
 .fixed-background {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   z-index: -100;
-  width: 200%;
-  height: 200%;
   pointer-events: none;
   background-color: black;
 }
