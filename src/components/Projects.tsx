@@ -18,13 +18,14 @@ const projects: Project[] = [
   github: "https://github.com/kulj33t/CareerCopilot",
 },
 
- {
-    title: "Linux Customization & Dotfiles",
-    description:
-      "Personal configuration files for a custom Linux desktop experience, featuring tailored setups for Waybar, wofi, and custom Python GTK tools for system management.",
-    image: "icons/projects/linux.png",
-    github: "https://github.com/kulj33t/dotfiles",
-  },
+{
+  title: "Linux Customization & Dotfiles",
+  description:
+    "Personal configuration files for a custom Linux desktop experience, featuring tailored setups for Waybar, wofi, and custom Python GTK tools for system management.",
+  image: "icons/projects/linux.png",
+  url: "/dotFiles",
+  github: "https://github.com/kulj33t/dotfiles",
+},
   {
     
     title: "LeChat: Real-Time Chat Application",

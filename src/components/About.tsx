@@ -45,15 +45,13 @@ const FloatingIcon: React.FC<{
     <img
       src={src}
       alt=""
+      className="absolute select-none pointer-events-none"
       style={{
-        position: "absolute",
         top: `calc(50vh + ${position.y}vh - 3vh)`,
         left: `calc(50vw + ${position.x}vw)`,
         width,
         height,
         transform: `translateY(${offsetY}px) rotate(${rotation}deg)`,
-        userSelect: "none",
-        pointerEvents: "none",
       }}
       draggable={false}
     />
@@ -67,18 +65,7 @@ const FloatingBackground: React.FC<{
   const iconSize = isPortrait ? 0.2 : 2.2;
 
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100vw",
-        height: "100vh",
-        overflow: "hidden",
-        zIndex: 0,
-        pointerEvents: "none",
-      }}
-    >
+    <div className="absolute top-0 left-0 w-screen h-screen overflow-hidden z-0 pointer-events-none">
       {iconPositions.map((pos, i) => (
         <FloatingIcon
           key={`icon-${i}`}
@@ -119,12 +106,14 @@ const About: React.FC = () => {
   );
 
   return (
-    <div style={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+    <div className="relative h-screen overflow-hidden">
       <FloatingBackground iconPositions={iconPositions} isPortrait={isPortrait} />
-      <div style={styles.wrapper}>
-        <div style={styles.container}>
-          <h1 style={styles.greeting}>Hi there</h1>
-          <p style={styles.text}>
+      <div className="h-screen w-screen flex justify-center items-center relative z-10 p-4 box-border">
+        <div className="w-[40vw] min-w-[300px] p-[2vh] rounded-[1.6vh] bg-white/5 backdrop-blur-[10px] text-[#ccc] shadow-[0_0.4vh_3vh_rgba(0,0,0,0.1)] flex flex-col items-center justify-center text-center">
+          <h1 className="font-['Tenkai',_sans-serif] text-[clamp(1.5rem,2vw+1vh,3rem)] mb-6 text-white tracking-[2px]">
+            Hi there
+          </h1>
+          <p className="text-[clamp(0.8rem,2vw+1vh,1.2rem)] leading-[1.6] text-[#ddd]">
             I’m Kuljeet Singh, a passionate web developer specializing in
             building beautiful and performant web applications using React and
             TypeScript. I love crafting clean, modern UI and enjoy solving
@@ -134,47 +123,6 @@ const About: React.FC = () => {
       </div>
     </div>
   );
-};
-const styles: { [key: string]: React.CSSProperties } = {
-  wrapper: {
-    height: "100vh",
-    width: "100vw",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-    zIndex: 1,
-    padding: "1rem",
-    boxSizing: "border-box",
-  },
-  container: {
-    width: "40vw",
-    minWidth: "300px",
-    padding: "2vh",
-    borderRadius: "1.6vh",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    backdropFilter: "blur(10px)",
-    WebkitBackdropFilter: "blur(10px)",
-    color: "#ccc",
-    boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.1)",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    textAlign: "center",
-  },
-  greeting: {
-    fontFamily: "'Tenkai', sans-serif",
-    fontSize: "clamp(1.5rem, 2vw + 1vh, 3rem)",
-    marginBottom: "24px",
-    color: "#fff",
-    letterSpacing: "2px",
-  },
-  text: {
-    fontSize: "clamp(0.8rem, 2vw + 1vh, 1.2rem)",
-    lineHeight: 1.6,
-    color: "#ddd",
-  },
 };
 
 export default About;

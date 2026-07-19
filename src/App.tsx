@@ -1,4 +1,5 @@
 import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Background from "./components/Background";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -7,7 +8,35 @@ import About from "./components/About";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import ResumeBtn from "./components/ReumeBtn";
+import DotFiles from "./pages/DotFiles"; 
 import "./App.css";
+
+const Home: React.FC = () => (
+  <>
+    <Header />
+    <section id="hero">
+      <Hero />
+    </section>
+
+    <section id="about">
+      <About/>
+    </section>
+
+    <section id="Tech">
+      <Skills/>
+    </section>
+
+    <section id="Project">
+      <Projects/>
+    </section>
+
+    <section id="footer">
+      <Footer/>
+    </section>
+
+    <ResumeBtn/>
+  </>
+);
 
 const App: React.FC = () => {
   return (
@@ -17,28 +46,12 @@ const App: React.FC = () => {
       </div>
 
       <main>
-        <Header />
-        <section id="hero">
-          <Hero />
-        </section>
-
-        <section id="about">
-          <About/>
-        </section>
-
-        <section id="Tech">
-          <Skills/>
-        </section>
-
-        <section id="Project">
-          <Projects/>
-        </section>
-
-        <section id="footer">
-          <Footer/>
-        </section>
-
-          <ResumeBtn/>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/dotFiles" element={<DotFiles />} />
+          </Routes>
+        </Router>
       </main>
     </div>
   );
