@@ -17,7 +17,6 @@ const projects: Project[] = [
     url: "https://careercopilot-kuljeet.vercel.app",
     github: "https://github.com/kulj33t/CareerCopilot",
   },
-
   {
     title: "Linux Customization & Dotfiles",
     description:
@@ -26,7 +25,6 @@ const projects: Project[] = [
     url: "/dotFiles",
     github: "https://github.com/kulj33t/dotfiles",
   },
-
   {
     title: "LeChat: Real-Time Chat Application",
     description:
@@ -35,7 +33,6 @@ const projects: Project[] = [
     url: "https://lechat-public.vercel.app",
     github: "https://github.com/kulj33t/LeChat",
   },
-
   {
     title: "RateIt",
     description:
@@ -44,7 +41,6 @@ const projects: Project[] = [
     url: "https://rateitorhateit.vercel.app",
     github: "https://github.com/kulj33t/rateitorhateit",
   },
-
   {
     title: "AI ChatBot Assistant",
     description:
@@ -53,7 +49,6 @@ const projects: Project[] = [
     url: "https://chatbot-public.vercel.app",
     github: "https://github.com/kulj33t/Chatbot",
   },
-
   {
     title: "AttendX",
     description:
@@ -61,7 +56,6 @@ const projects: Project[] = [
     image: "icons/projects/attendx.png",
     github: "https://github.com/kulj33t/AttendX",
   },
-
   {
     title: "Portfolio",
     description:
@@ -77,6 +71,9 @@ const Projects: React.FC = () => {
 
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  
+  // NEW: State to track which card is currently tapped on mobile
+  const [activeCard, setActiveCard] = useState<number | null>(null);
 
   const scrollByCard = (direction: "left" | "right") => {
     if (!containerRef.current) return;
@@ -98,11 +95,7 @@ const Projects: React.FC = () => {
   const checkArrows = () => {
     if (!containerRef.current) return;
 
-    const {
-      scrollLeft,
-      scrollWidth,
-      clientWidth,
-    } = containerRef.current;
+    const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
 
     setCanScrollLeft(scrollLeft > 5);
     setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
@@ -145,7 +138,6 @@ const Projects: React.FC = () => {
           relative
         "
       >
-
         <h1
           className="
             mb-[6vh]
@@ -159,7 +151,6 @@ const Projects: React.FC = () => {
           A small selection of recent projects
         </h1>
 
-
         <div
           className="
             relative
@@ -167,7 +158,6 @@ const Projects: React.FC = () => {
             overflow-hidden
           "
         >
-
           {canScrollLeft && (
             <button
               onClick={() => scrollByCard("left")}
@@ -187,13 +177,13 @@ const Projects: React.FC = () => {
                 items-center
                 justify-center
                 transition
-                hover:bg-black/90
+                [@media(hover:hover)]:hover:bg-black/90
+                active:bg-black/90
               "
             >
               &#10094;
             </button>
           )}
-
 
           <div
             ref={containerRef}
@@ -206,192 +196,160 @@ const Projects: React.FC = () => {
               scrollbar-hide
             "
           >
+            {projects.map(({ title, description, image, url, github }, idx) => (
+              <div
+                key={title}
+                // NEW: Toggle this card active when tapped
+                onClick={() => setActiveCard(activeCard === idx ? null : idx)}
+                data-active={activeCard === idx}
+                style={{
+                  backgroundImage: `url(${image})`,
+                  marginLeft: idx === 0 ? "2rem" : "1rem",
+                  marginRight: idx === projects.length - 1 ? "2rem" : "1rem",
+                }}
+                className="
+                  group
+                  relative
+                  shrink-0
+                  w-[320px]
+                  h-[420px]
+                  rounded-2xl
+                  overflow-hidden
+                  bg-cover
+                  bg-center
+                  shadow-[0_0_15px_rgba(255,255,255,.15)]
+                  transition-all
+                  duration-300
 
-            {projects.map(
-              ({ title, description, image, url, github }, idx) => (
+                  [@media(hover:hover)]:hover:-translate-y-2
+                  [@media(hover:hover)]:hover:scale-[1.02]
+                  [@media(hover:hover)]:hover:shadow-[0_0_20px_rgba(255,255,255,.6),0_12px_32px_rgba(0,0,0,.4)]
+
+                  data-[active=true]:-translate-y-2
+                  data-[active=true]:scale-[1.02]
+                  data-[active=true]:shadow-[0_0_20px_rgba(255,255,255,.6),0_12px_32px_rgba(0,0,0,.4)]
+                "
+              >
                 <div
-                  key={title}
-                  style={{
-                    backgroundImage: `url(${image})`,
-                    marginLeft:
-                      idx === 0 ? "2rem" : "1rem",
-                    marginRight:
-                      idx === projects.length - 1
-                        ? "2rem"
-                        : "1rem",
-                  }}
                   className="
-                    group
-                    relative
-                    shrink-0
-
-                    w-[320px]
-                    h-[420px]
-
-                    rounded-2xl
-                    overflow-hidden
-
-                    bg-cover
-                    bg-center
-
-                    shadow-[0_0_15px_rgba(255,255,255,.15)]
-
+                    absolute
+                    inset-0
+                    flex
+                    flex-col
+                    p-6
+                    text-center
+                    text-white
+                    opacity-0
+                    translate-y-5
+                    bg-black/20
                     transition-all
-                    duration-300
+                    duration-400
+                    min-h-0
 
-                    hover:-translate-y-2
-                    hover:scale-[1.02]
+                    [@media(hover:hover)]:group-hover:opacity-100
+                    [@media(hover:hover)]:group-hover:translate-y-0
+                    [@media(hover:hover)]:group-hover:bg-black/40
+                    [@media(hover:hover)]:group-hover:backdrop-blur-md
 
-                    hover:shadow-[0_0_20px_rgba(255,255,255,.6),0_12px_32px_rgba(0,0,0,.4)]
+                    group-data-[active=true]:opacity-100
+                    group-data-[active=true]:translate-y-0
+                    group-data-[active=true]:bg-black/40
+                    group-data-[active=true]:backdrop-blur-md
                   "
                 >
+                  <h2
+                    className="
+                      text-lg
+                      md:text-xl
+                      font-bold
+                      leading-tight
+                      line-clamp-2
+                    "
+                  >
+                    {title}
+                  </h2>
+
+                  <p
+                    className="
+                      mt-3
+                      text-sm
+                      md:text-[15px]
+                      leading-6
+                      text-gray-300
+                      line-clamp-6
+                    "
+                  >
+                    {description}
+                  </p>
 
                   <div
                     className="
-                      absolute
-                      inset-0
-
+                      mt-auto
                       flex
                       flex-col
-
-                      p-6
-
-                      text-center
-                      text-white
-
-                      opacity-0
-                      translate-y-5
-
-                      bg-black/20
-
-                      transition-all
-                      duration-400
-
-                      group-hover:opacity-100
-                      group-hover:translate-y-0
-
-                      group-hover:bg-black/40
-                      group-hover:backdrop-blur-md
-
-                      min-h-0
+                      gap-3
                     "
                   >
+                    {url && (
+                      <a
+                        href={url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        // NEW: Stop click from bubbling up and closing the card
+                        onClick={(e) => e.stopPropagation()} 
+                        className="
+                          rounded-full
+                          bg-white
+                          px-6
+                          py-3
+                          text-center
+                          font-semibold
+                          text-black
+                          transition-all
+                          duration-300
 
-                    <h2
-                      className="
-                        text-lg
-                        md:text-xl
-                        font-bold
-                        leading-tight
-                        line-clamp-2
-                      "
-                    >
-                      {title}
-                    </h2>
+                          [@media(hover:hover)]:hover:-translate-y-1
+                          [@media(hover:hover)]:hover:shadow-[0_6px_14px_rgba(0,0,0,.25),0_0_10px_rgba(192,132,252,.6)]
+                          active:scale-95
+                        "
+                      >
+                        Live
+                      </a>
+                    )}
 
+                    {github && (
+                      <a
+                        href={github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        // NEW: Stop click from bubbling up and closing the card
+                        onClick={(e) => e.stopPropagation()}
+                        className="
+                          rounded-full
+                          border
+                          border-neutral-700
+                          bg-neutral-900
+                          px-6
+                          py-3
+                          text-center
+                          font-semibold
+                          text-white
+                          transition-all
+                          duration-300
 
-                    <p
-                      className="
-                        mt-3
-
-                        text-sm
-                        md:text-[15px]
-
-                        leading-6
-                        text-gray-300
-
-                        line-clamp-6
-                      "
-                    >
-                      {description}
-                    </p>
-
-
-                    <div
-                      className="
-                        mt-auto
-                        flex
-                        flex-col
-                        gap-3
-                      "
-                    >
-
-                      {url && (
-                        <a
-                          href={url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="
-                            rounded-full
-
-                            bg-white
-
-                            px-6
-                            py-3
-
-                            text-center
-                            font-semibold
-                            text-black
-
-                            transition-all
-                            duration-300
-
-                            hover:-translate-y-1
-
-                            hover:shadow-[0_6px_14px_rgba(0,0,0,.25),0_0_10px_rgba(192,132,252,.6)]
-
-                            active:scale-95
-                          "
-                        >
-                          Live
-                        </a>
-                      )}
-
-
-                      {github && (
-                        <a
-                          href={github}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="
-                            rounded-full
-
-                            border
-                            border-neutral-700
-
-                            bg-neutral-900
-
-                            px-6
-                            py-3
-
-                            text-center
-                            font-semibold
-                            text-white
-
-                            transition-all
-                            duration-300
-
-                            hover:-translate-y-1
-
-                            hover:shadow-[0_6px_14px_rgba(0,0,0,.25),0_0_10px_rgba(192,132,252,.6)]
-
-                            active:scale-95
-                          "
-                        >
-                          GitHub
-                        </a>
-                      )}
-
-                    </div>
-
+                          [@media(hover:hover)]:hover:-translate-y-1
+                          [@media(hover:hover)]:hover:shadow-[0_6px_14px_rgba(0,0,0,.25),0_0_10px_rgba(192,132,252,.6)]
+                          active:scale-95
+                        "
+                      >
+                        GitHub
+                      </a>
+                    )}
                   </div>
-
                 </div>
-              )
-            )}
-
+              </div>
+            ))}
           </div>
-
 
           {canScrollRight && (
             <button
@@ -401,34 +359,25 @@ const Projects: React.FC = () => {
                 right-0
                 top-1/2
                 -translate-y-1/2
-
                 z-20
-
                 h-14
                 w-14
-
                 rounded-full
-
                 bg-black/60
-
                 text-white
                 text-3xl
-
                 flex
                 items-center
                 justify-center
-
                 transition
-
-                hover:bg-black/90
+                [@media(hover:hover)]:hover:bg-black/90
+                active:bg-black/90
               "
             >
               &#10095;
             </button>
           )}
-
         </div>
-
       </div>
     </section>
   );

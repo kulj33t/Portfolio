@@ -8,7 +8,7 @@ import About from "./components/About";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import ResumeBtn from "./components/ReumeBtn";
-import DotFiles from "./pages/DotFiles"; 
+import DotFiles from './pages/DotFiles';
 import "./App.css";
 
 const Home: React.FC = () => (
