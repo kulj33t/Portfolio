@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const ResumeBtn: React.FC = () => {
   const resumeLink =
-    "https://drive.google.com/file/d/1djFq_CbRjjG8Gmug_B8mewBtNlM_n2dI/view?usp=sharing";
+    "https://drive.google.com/file/d/1KZ1iOd4vLc4oBhSROqAN5c8GkVCV91_U/view?usp=sharing";
 
 
   const [isPortrait, setIsPortrait] = useState(window.innerWidth < window.innerHeight);

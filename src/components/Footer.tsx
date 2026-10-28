@@ -13,7 +13,7 @@ const Footer: React.FC = () => {
 
         <div className="flex gap-[clamp(1rem,2vw,2rem)] mt-[1vh]">
           <a
-            href="mailto:kuljeet.singh.dev@gmail.com"
+            href="mailto:kulj33tsingh@gmail.com"
             className="w-[clamp(40px,4vw,48px)] h-[clamp(40px,4vw,48px)] rounded-full bg-white/[0.08] flex items-center justify-center transition-transform duration-200 ease cursor-pointer hover:scale-110"
           >
             <img 
