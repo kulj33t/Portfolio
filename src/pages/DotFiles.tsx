@@ -9,15 +9,6 @@ const IconCopy = ({ className }: { className?: string }) => (
 const IconTerminal = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>
 );
-const IconDownload = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
-);
-const IconFolder = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
-);
-const IconRocket = ({ className }: { className?: string }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></svg>
-);
 const IconGithub = ({ className }: { className?: string }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg>
 );
@@ -102,7 +93,6 @@ export default function DotFiles() {
   const [activeOs, setActiveOs] = useState<OsType>('arch');
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
-  // Auto-switching logic
   useEffect(() => {
     if (!isAutoPlaying) return;
 
@@ -250,9 +240,9 @@ export default function DotFiles() {
               <ActiveIcon className="absolute -bottom-10 -right-10 h-64 w-64 text-white/[0.02] pointer-events-none" />
               
               <div className="relative z-10">
-                <div className="text-zinc-500 mb-2 select-none">1. Synchronize package databases and update system</div>
+                <div className="text-zinc-500 mb-2 select-none"># 1. Synchronize package databases and update system</div>
                 <div className="flex items-center gap-3 mb-8">
-                  <span className="text-[#d87aff] select-none font-bold">$</span>
+                  <span className="text-[#d87aff] select-none font-bold">~ $</span>
                   <span className="text-white">{osCommands[activeOs].update}</span>
                 </div>
 
@@ -342,7 +332,7 @@ export default function DotFiles() {
           <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Core Installation</h2>
           <p className="text-zinc-400 max-w-2xl text-lg mb-8">Follow these steps carefully. The package string contains necessary tools like CopyQ for clipboards and Swayidle for power management.</p>
 
-          {/* Sleek Dynamic OS Indicator (Duplicated for context) */}
+          {/* Sleek Dynamic OS Indicator */}
           <div className="flex items-center gap-5 p-4 rounded-2xl bg-white/[0.02] border border-white/10 w-full max-w-md backdrop-blur-sm transition-all duration-500">
             <div className="h-14 w-14 rounded-xl bg-[#d87aff]/10 border border-[#d87aff]/30 flex items-center justify-center text-[#d87aff] shadow-[0_0_20px_-5px_rgba(216,122,255,0.4)] relative overflow-hidden">
                <ActiveIcon className="h-7 w-7 relative z-10 transition-transform duration-300" />
