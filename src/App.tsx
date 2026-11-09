@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Background from "./components/Background";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
@@ -42,10 +41,6 @@ const Home: React.FC = () => (
 const App: React.FC = () => {
   return (
     <div className="app-container">
-      <div className="fixed-background">
-        <Background />
-      </div>
-
       <main>
         <Router>
           <Routes>

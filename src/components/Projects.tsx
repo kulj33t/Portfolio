@@ -36,7 +36,7 @@ const projects: Project[] = [
   {
     title: "RateIt",
     description:
-      "A full-stack MERN application for tracking and ranking TV series. Features a unique S-Tier to F-Tier rating system, real-time community consensus charts, and a personalized library dashboard. Built with React, Tailwind CSS, Framer Motion, and a robust Node/Express backend.",
+      "A full-stack MERN application for tracking and ranking TV series. Features a unique S-Tier to F-Tier rating system, real-time community consensus charts, and a personalized library dashboard.",
     image: "icons/projects/rateit.png",
     url: "https://rateitorhateit.vercel.app",
     github: "https://github.com/kulj33t/rateitorhateit",
@@ -68,23 +68,38 @@ const projects: Project[] = [
 
 const Projects: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  
-  // NEW: State to track which card is currently tapped on mobile
+
+  // Track active card for mobile taps
   const [activeCard, setActiveCard] = useState<number | null>(null);
+
+  // Close active card if user taps outside of any card on mobile
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent | TouchEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest(".project-card")) {
+        setActiveCard(null);
+      }
+    };
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("touchstart", handleOutsideClick, {
+      passive: true,
+    });
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("touchstart", handleOutsideClick);
+    };
+  }, []);
 
   const scrollByCard = (direction: "left" | "right") => {
     if (!containerRef.current) return;
-
     const container = containerRef.current;
-    const card = container.firstElementChild as HTMLElement;
 
+    const card = container.firstElementChild as HTMLElement;
     if (!card) return;
 
-    const gap = 16;
-    const scrollAmount = card.offsetWidth + gap;
+    const scrollAmount = card.offsetWidth + 16;
 
     container.scrollBy({
       left: direction === "left" ? -scrollAmount : scrollAmount,
@@ -94,19 +109,16 @@ const Projects: React.FC = () => {
 
   const checkArrows = () => {
     if (!containerRef.current) return;
-
     const { scrollLeft, scrollWidth, clientWidth } = containerRef.current;
 
     setCanScrollLeft(scrollLeft > 5);
-    setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+    setCanScrollRight(Math.ceil(scrollLeft + clientWidth) < scrollWidth - 5);
   };
 
   useEffect(() => {
     checkArrows();
-
     const container = containerRef.current;
-
-    container?.addEventListener("scroll", checkArrows);
+    container?.addEventListener("scroll", checkArrows, { passive: true });
     window.addEventListener("resize", checkArrows);
 
     return () => {
@@ -116,202 +128,79 @@ const Projects: React.FC = () => {
   }, []);
 
   return (
-    <section
-      className="
-        min-h-screen
-        w-screen
-        bg-black/80
-        px-[4vw]
-        py-[6vh]
-        flex
-        items-center
-        justify-center
-      "
-    >
-      <div
-        className="
-          w-[90%]
-          max-w-[1400px]
-          flex
-          flex-col
-          gap-[4vh]
-          relative
-        "
-      >
+    <section className="relative flex min-h-screen w-full flex-col items-center justify-center bg-black/80 py-16 md:py-24">
+      <div className="relative w-full max-w-[1400px]">
         <h1
-          className="
-            mb-[6vh]
-            text-center
-            text-[clamp(1.8rem,2vw+1vh,3rem)]
-            tracking-wide
-            text-white
-            font-[Tenkai]
-          "
+          className="mb-8 px-6 text-center text-[clamp(1.5rem,3vw+1rem,3rem)] font-medium tracking-wide text-white md:mb-12"
+          style={{ fontFamily: "Tenkai, sans-serif" }}
         >
           A small selection of recent projects
         </h1>
 
-        <div
-          className="
-            relative
-            w-full
-            overflow-hidden
-          "
-        >
-          {canScrollLeft && (
-            <button
-              onClick={() => scrollByCard("left")}
-              className="
-                absolute
-                left-0
-                top-1/2
-                -translate-y-1/2
-                z-20
-                h-14
-                w-14
-                rounded-full
-                bg-black/60
-                text-white
-                text-3xl
-                flex
-                items-center
-                justify-center
-                transition
-                [@media(hover:hover)]:hover:bg-black/90
-                active:bg-black/90
-              "
-            >
-              &#10094;
-            </button>
-          )}
+        <div className="group/slider relative w-full">
+          {/* Left Navigation Arrow */}
+          <button
+            onClick={() => scrollByCard("left")}
+            disabled={!canScrollLeft}
+            className={`absolute left-4 top-1/2 z-20 hidden h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-white/12 bg-black/60 text-2xl text-white backdrop-blur-md transition-all duration-300 ease-out hover:scale-110 hover:border-white/20 hover:bg-black/90 disabled:pointer-events-none disabled:opacity-0 md:flex xl:-left-6 ${
+              canScrollLeft ? "opacity-100" : "opacity-0"
+            }`}
+            aria-label="Scroll Left"
+          >
+            &#10094;
+          </button>
 
+          {/* Scroll Container */}
           <div
             ref={containerRef}
-            className="
-              flex
-              overflow-x-auto
-              scroll-smooth
-              pt-8
-              pb-8
-              scrollbar-hide
-            "
+            className="flex w-full snap-x snap-mandatory gap-4 overflow-x-auto scroll-smooth px-6 pb-12 pt-4 md:gap-6 md:px-12 xl:px-20
+                       [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
             {projects.map(({ title, description, image, url, github }, idx) => (
               <div
                 key={title}
-                // NEW: Toggle this card active when tapped
                 onClick={() => setActiveCard(activeCard === idx ? null : idx)}
                 data-active={activeCard === idx}
-                style={{
-                  backgroundImage: `url(${image})`,
-                  marginLeft: idx === 0 ? "2rem" : "1rem",
-                  marginRight: idx === projects.length - 1 ? "2rem" : "1rem",
-                }}
-                className="
-                  group
-                  relative
-                  shrink-0
-                  w-[320px]
-                  h-[420px]
-                  rounded-2xl
-                  overflow-hidden
-                  bg-cover
-                  bg-center
-                  shadow-[0_0_15px_rgba(255,255,255,.15)]
-                  transition-all
-                  duration-300
-
-                  [@media(hover:hover)]:hover:-translate-y-2
-                  [@media(hover:hover)]:hover:scale-[1.02]
-                  [@media(hover:hover)]:hover:shadow-[0_0_20px_rgba(255,255,255,.6),0_12px_32px_rgba(0,0,0,.4)]
-
-                  data-[active=true]:-translate-y-2
-                  data-[active=true]:scale-[1.02]
-                  data-[active=true]:shadow-[0_0_20px_rgba(255,255,255,.6),0_12px_32px_rgba(0,0,0,.4)]
-                "
+                style={{ backgroundImage: `url(${image})` }}
+                className="project-card group relative h-[380px] w-[75vw] max-w-[280px] shrink-0 snap-center cursor-pointer overflow-hidden rounded-[1.6vh] bg-cover bg-center transition-all duration-500 ease-in-out
+                           border border-white/12 shadow-[0_20px_80px_rgba(0,0,0,0.3)]
+                           sm:h-[420px] sm:max-w-[320px] lg:h-[480px] lg:max-w-[360px]
+                           [@media(hover:hover)]:hover:-translate-y-3 [@media(hover:hover)]:hover:border-white/20 [@media(hover:hover)]:hover:shadow-[0_25px_90px_rgba(0,0,0,0.4)]
+                           data-[active=true]:-translate-y-3 data-[active=true]:border-white/20 data-[active=true]:shadow-[0_25px_90px_rgba(0,0,0,0.4)]"
               >
+                {/* Hover/Active Dark Glass Overlay (0 opacity by default) */}
                 <div
-                  className="
-                    absolute
-                    inset-0
-                    flex
-                    flex-col
-                    p-6
-                    text-center
-                    text-white
-                    opacity-0
-                    translate-y-5
-                    bg-black/20
-                    transition-all
-                    duration-400
-                    min-h-0
+                  className="absolute inset-0 bg-black/80 opacity-0 backdrop-blur-md transition-opacity duration-500 
+                                [@media(hover:hover)]:group-hover:opacity-100 group-data-[active=true]:opacity-100"
+                />
 
-                    [@media(hover:hover)]:group-hover:opacity-100
-                    [@media(hover:hover)]:group-hover:translate-y-0
-                    [@media(hover:hover)]:group-hover:bg-black/40
-                    [@media(hover:hover)]:group-hover:backdrop-blur-md
-
-                    group-data-[active=true]:opacity-100
-                    group-data-[active=true]:translate-y-0
-                    group-data-[active=true]:bg-black/40
-                    group-data-[active=true]:backdrop-blur-md
-                  "
+                {/* Content Wrapper (Hidden/Shifted down slightly by default) 
+                    - flex-col justify-start keeps everything anchored to the top 
+                */}
+                <div
+                  className="absolute inset-0 flex flex-col justify-start p-6 opacity-0 transition-all duration-500 ease-out md:p-8
+                                translate-y-4 [@media(hover:hover)]:group-hover:translate-y-0 [@media(hover:hover)]:group-hover:opacity-100 
+                                group-data-[active=true]:translate-y-0 group-data-[active=true]:opacity-100"
                 >
-                  <h2
-                    className="
-                      text-lg
-                      md:text-xl
-                      font-bold
-                      leading-tight
-                      line-clamp-2
-                    "
-                  >
+                  {/* Title starts at the top */}
+                  <h2 className="text-xl font-bold leading-tight tracking-tight text-white sm:text-2xl">
                     {title}
                   </h2>
 
-                  <p
-                    className="
-                      mt-3
-                      text-sm
-                      md:text-[15px]
-                      leading-6
-                      text-gray-300
-                      line-clamp-6
-                    "
-                  >
+                  {/* Full description without line-clamp */}
+                  <p className="mt-3 text-[13px] leading-relaxed text-white/70 sm:text-sm md:text-base">
                     {description}
                   </p>
 
-                  <div
-                    className="
-                      mt-auto
-                      flex
-                      flex-col
-                      gap-3
-                    "
-                  >
+                  {/* Buttons pushed to the bottom using mt-auto */}
+                  <div className="mt-auto flex flex-wrap items-center gap-3 pt-4">
                     {url && (
                       <a
                         href={url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        // NEW: Stop click from bubbling up and closing the card
-                        onClick={(e) => e.stopPropagation()} 
-                        className="
-                          rounded-full
-                          bg-white
-                          px-6
-                          py-3
-                          text-center
-                          font-semibold
-                          text-black
-                          transition-all
-                          duration-300
-
-                          [@media(hover:hover)]:hover:-translate-y-1
-                          [@media(hover:hover)]:hover:shadow-[0_6px_14px_rgba(0,0,0,.25),0_0_10px_rgba(192,132,252,.6)]
-                          active:scale-95
-                        "
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex-1 rounded-full bg-white py-2.5 text-center text-sm font-semibold text-black transition-transform duration-300 hover:scale-105 active:scale-95"
                       >
                         Live
                       </a>
@@ -322,25 +211,8 @@ const Projects: React.FC = () => {
                         href={github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        // NEW: Stop click from bubbling up and closing the card
                         onClick={(e) => e.stopPropagation()}
-                        className="
-                          rounded-full
-                          border
-                          border-neutral-700
-                          bg-neutral-900
-                          px-6
-                          py-3
-                          text-center
-                          font-semibold
-                          text-white
-                          transition-all
-                          duration-300
-
-                          [@media(hover:hover)]:hover:-translate-y-1
-                          [@media(hover:hover)]:hover:shadow-[0_6px_14px_rgba(0,0,0,.25),0_0_10px_rgba(192,132,252,.6)]
-                          active:scale-95
-                        "
+                        className="flex-1 rounded-full border border-white/30 bg-black/40 py-2.5 text-center text-sm font-semibold text-white transition-all duration-300 hover:scale-105 hover:bg-white/10 active:scale-95"
                       >
                         GitHub
                       </a>
@@ -351,32 +223,17 @@ const Projects: React.FC = () => {
             ))}
           </div>
 
-          {canScrollRight && (
-            <button
-              onClick={() => scrollByCard("right")}
-              className="
-                absolute
-                right-0
-                top-1/2
-                -translate-y-1/2
-                z-20
-                h-14
-                w-14
-                rounded-full
-                bg-black/60
-                text-white
-                text-3xl
-                flex
-                items-center
-                justify-center
-                transition
-                [@media(hover:hover)]:hover:bg-black/90
-                active:bg-black/90
-              "
-            >
-              &#10095;
-            </button>
-          )}
+          {/* Right Navigation Arrow */}
+          <button
+            onClick={() => scrollByCard("right")}
+            disabled={!canScrollRight}
+            className={`absolute right-4 top-1/2 z-20 hidden h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-white/12 bg-black/60 text-2xl text-white backdrop-blur-md transition-all duration-300 ease-out hover:scale-110 hover:border-white/20 hover:bg-black/90 disabled:pointer-events-none disabled:opacity-0 md:flex xl:-right-6 ${
+              canScrollRight ? "opacity-100" : "opacity-0"
+            }`}
+            aria-label="Scroll Right"
+          >
+            &#10095;
+          </button>
         </div>
       </div>
     </section>

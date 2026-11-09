@@ -1,9 +1,10 @@
 import React, {
-  useState,
+  Component,
+  Suspense,
+  useCallback,
   useEffect,
   useRef,
-  useCallback,
-  Suspense,
+  useState,
 } from "react";
 
 import * as THREE from "three";
@@ -15,84 +16,9 @@ import { PerspectiveCamera } from "three";
 
 const MODEL_GLB = "/models/desk.glb";
 
-interface DeskModelProps {
-  onLoaded?: (obj: THREE.Object3D) => void;
-}
-
-function DeskModel({ onLoaded }: DeskModelProps) {
-  const gltf = useLoader(GLTFLoader, MODEL_GLB);
-  const object = gltf.scene;
-
-  useEffect(() => {
-    if (!object) return;
-
-    object.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-      }
-    });
-
-    object.updateMatrixWorld(true);
-    onLoaded?.(object);
-  }, [object, onLoaded]);
-
-  const scale = 3;
-  const pos: [number, number, number] = [0, 0, 0];
-  const rot: [number, number, number] = [-0.1, -1.1, -0.1];
-
-  return (
-    <primitive object={object} scale={scale} position={pos} rotation={rot} />
-  );
-}
-
-interface CameraFitProps {
-  object: THREE.Object3D | null;
-  controlsRef: React.RefObject<OrbitControlsImpl | null>;
-  isPortrait: boolean;
-}
-
-function CameraFit({ object, controlsRef, isPortrait }: CameraFitProps) {
-  const { camera } = useThree();
-
-  useEffect(() => {
-    if (!object) return;
-    if (!(camera instanceof PerspectiveCamera)) return;
-
-    object.updateMatrixWorld(true);
-
-    const box = new THREE.Box3().setFromObject(object);
-    const center = box.getCenter(new THREE.Vector3());
-    const size = box.getSize(new THREE.Vector3());
-    const maxDim = Math.max(size.x, size.y, size.z);
-
-    const fov = (camera.fov * Math.PI) / 180;
-
-    let dist = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
-
-    const extraFactor = isPortrait ? 1.25 : 1.15;
-
-    dist *= extraFactor;
-
-    const newPos = new THREE.Vector3(
-      center.x + dist * 0.6,
-      center.y + dist * 0.35,
-      center.z + dist * 0.6,
-    );
-
-    camera.position.copy(newPos);
-    camera.near = Math.max(0.01, dist / 1000);
-    camera.far = dist * 100;
-    camera.updateProjectionMatrix();
-
-    if (controlsRef.current) {
-      controlsRef.current.target.copy(center);
-      controlsRef.current.update();
-    }
-  }, [object, camera, controlsRef, isPortrait]);
-
-  return null;
-}
+const MODEL_SCALE = 1;
+const MODEL_POSITION: [number, number, number] = [0, 0, 0];
+const MODEL_ROTATION: [number, number, number] = [-0.1, -1.1, -0.1];
 
 const socials = [
   {
@@ -117,216 +43,647 @@ const socials = [
   },
 ];
 
-const Hero: React.FC = () => {
-  const [isPortrait, setIsPortrait] = useState(false);
-  const [modelObject, setModelObject] = useState<THREE.Object3D | null>(null);
+interface DeskModelProps {
+  onLoaded: (object: THREE.Object3D) => void;
+}
 
+function DeskModel({ onLoaded }: DeskModelProps) {
+  const gltf = useLoader(GLTFLoader, MODEL_GLB);
+  const object = gltf.scene;
+  const { gl } = useThree();
+
+  useEffect(() => {
+    const maxAnisotropy = gl.capabilities.getMaxAnisotropy();
+
+    object.traverse((child) => {
+      if (!(child instanceof THREE.Mesh)) return;
+
+      child.castShadow = true;
+      child.receiveShadow = true;
+
+      // Improve texture sharpness when surfaces are viewed at an angle.
+      const materials = Array.isArray(child.material)
+        ? child.material
+        : [child.material];
+
+      materials.forEach((material) => {
+        Object.values(material).forEach((value) => {
+          if (value instanceof THREE.Texture) {
+            value.anisotropy = Math.min(8, maxAnisotropy);
+          }
+        });
+      });
+    });
+
+    object.updateMatrixWorld(true);
+    onLoaded(object);
+  }, [object, onLoaded, gl]);
+
+  return (
+    <primitive
+      object={object}
+      scale={MODEL_SCALE}
+      position={MODEL_POSITION}
+      rotation={MODEL_ROTATION}
+    />
+  );
+}
+
+interface CameraFitProps {
+  object: THREE.Object3D | null;
+  controlsRef: React.RefObject<OrbitControlsImpl | null>;
+}
+
+function CameraFit({ object, controlsRef }: CameraFitProps) {
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    if (!object || size.width <= 0 || size.height <= 0) return;
+    if (!(camera instanceof PerspectiveCamera)) return;
+
+    object.updateMatrixWorld(true);
+
+    const bounds = new THREE.Box3().setFromObject(object);
+    if (bounds.isEmpty()) return;
+
+    const center = bounds.getCenter(new THREE.Vector3());
+    const sphere = bounds.getBoundingSphere(new THREE.Sphere());
+    const radius = Math.max(sphere.radius, 0.001);
+
+    const aspect = size.width / size.height;
+    const verticalHalfFov = THREE.MathUtils.degToRad(camera.fov) / 2;
+    const horizontalHalfFov = Math.atan(Math.tan(verticalHalfFov) * aspect);
+    const limitingHalfFov = Math.max(
+      0.01,
+      Math.min(verticalHalfFov, horizontalHalfFov),
+    );
+    const distance = (radius / Math.sin(limitingHalfFov)) * 0.6;
+
+    const direction = new THREE.Vector3(0.6, 0.35, 0.6).normalize();
+
+    camera.position.copy(center).addScaledVector(direction, distance);
+    camera.near = Math.max(distance / 1000, 0.001);
+    camera.far = Math.max(distance * 100, 1000);
+    camera.lookAt(center);
+    camera.updateProjectionMatrix();
+
+    if (controlsRef.current) {
+      controlsRef.current.target.copy(center);
+      controlsRef.current.update();
+    }
+  }, [object, camera, controlsRef, size.width, size.height]);
+
+  return null;
+}
+
+interface ModelErrorBoundaryProps {
+  onError: (error: Error) => void;
+  children: React.ReactNode;
+}
+
+interface ModelErrorBoundaryState {
+  hasError: boolean;
+}
+
+class ModelErrorBoundary extends Component<
+  ModelErrorBoundaryProps,
+  ModelErrorBoundaryState
+> {
+  state: ModelErrorBoundaryState = { hasError: false };
+
+  static getDerivedStateFromError(): ModelErrorBoundaryState {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    this.props.onError(error);
+  }
+
+  render() {
+    return this.state.hasError ? null : this.props.children;
+  }
+}
+
+function LoadingOverlay({
+  progress,
+  fadingOut,
+}: {
+  progress: number;
+  fadingOut: boolean;
+}) {
+  return (
+    <div
+      aria-live="polite"
+      className={`absolute inset-0 z-30 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md transition-opacity duration-500 ${
+        fadingOut ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
+    >
+      <div className="w-full max-w-55 rounded-2xl border border-white/10 bg-white/4 p-5 text-center shadow-2xl">
+        <div className="relative mx-auto mb-4 flex h-14 w-14 items-center justify-center">
+          <div className="absolute inset-0 rounded-full border-2 border-white/10" />
+          <div className="absolute inset-0 animate-spin rounded-full border-2 border-r-[#d87aff]/50 border-t-[#d87aff] border-b-transparent border-l-transparent shadow-[0_0_20px_rgba(216,122,255,0.4)]" />
+          <span className="font-mono text-sm font-black text-white">
+            {progress}%
+          </span>
+        </div>
+
+        <p className="mb-1 text-xs font-bold tracking-wide text-white">
+          Interactive 3D Desk
+        </p>
+        <p className="mb-3 truncate font-mono text-[11px] text-zinc-400">
+          {progress < 100 ? "Downloading model..." : "Finalizing scene..."}
+        </p>
+
+        <div
+          className="h-1.5 w-full overflow-hidden rounded-full bg-white/10"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={progress}
+          aria-label="Loading 3D model"
+        >
+          <div
+            className="h-full rounded-full bg-linear-to-r from-violet-500 via-[#d87aff] to-cyan-400 transition-[width] duration-200"
+            style={{ width: `${Math.max(5, progress)}%` }}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const Hero: React.FC = () => {
+  const [modelObject, setModelObject] = useState<THREE.Object3D | null>(null);
   const [isModelReady, setIsModelReady] = useState(false);
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
+  const [modelError, setModelError] = useState<string | null>(null);
 
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
-
   const { progress } = useProgress();
-  const displayProgress = Math.min(100, Math.round(progress));
 
-  useEffect(() => {
-    const checkOrientation = () => {
-      const portrait =
-        window.innerHeight >= window.innerWidth || window.innerWidth < 1024;
+  const displayProgress = Number.isFinite(progress)
+    ? Math.min(100, Math.max(0, Math.round(progress)))
+    : 0;
 
-      setIsPortrait(portrait);
-    };
+  const handleModelLoaded = useCallback((object: THREE.Object3D) => {
+    setModelObject(object);
+    setIsModelReady(true);
+    setModelError(null);
+  }, []);
 
-    checkOrientation();
-
-    window.addEventListener("resize", checkOrientation);
-    window.addEventListener("orientationchange", checkOrientation);
-
-    return () => {
-      window.removeEventListener("resize", checkOrientation);
-      window.removeEventListener("orientationchange", checkOrientation);
-    };
+  const handleModelError = useCallback((error: Error) => {
+    console.error(
+      `Unable to load ${MODEL_GLB}. Check that the file exists in public/models and that the deployed URL returns HTTP 200.`,
+      error,
+    );
+    setModelError(
+      "The 3D preview could not be loaded. Please refresh the page.",
+    );
   }, []);
 
   useEffect(() => {
-    if (isModelReady) {
-      setIsFadingOut(true);
+    if (!isModelReady) return;
 
-      const timer = setTimeout(() => {
-        setShowLoader(false);
-      }, 450);
+    setIsFadingOut(true);
+    const timer = window.setTimeout(() => setShowLoader(false), 500);
 
-      return () => clearTimeout(timer);
-    }
+    return () => window.clearTimeout(timer);
   }, [isModelReady]);
 
-  const handleModelLoaded = useCallback((obj: THREE.Object3D) => {
-    setModelObject(obj);
-    setIsModelReady(true);
-  }, []);
+  useEffect(() => {
+    if (isModelReady || modelError) return;
+
+    const timer = window.setTimeout(() => {
+      setModelError(
+        "The 3D model is taking too long to load. Check your connection and try refreshing.",
+      );
+    }, 45000);
+
+    return () => window.clearTimeout(timer);
+  }, [isModelReady, modelError]);
 
   return (
-    <div className="relative min-h-screen w-full bg-black text-white font-sans overflow-hidden flex items-center selection:bg-[#d87aff]/30 selection:text-white">
-      {/* Background Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-100 sm:w-162.5 h-100 sm:h-162.5 bg-[#d87aff]/10 rounded-full blur-[140px] pointer-events-none" />
+    <main className="hero-root relative isolate flex min-h-svh w-full items-center justify-center overflow-x-clip bg-black font-sans text-white selection:bg-[#d87aff]/30 selection:text-white">
+      <style>{`
+        /*
+         * Default = portrait/tablet/mobile:
+         * identity first, canvas second, socials below canvas.
+         *
+         * Landscape desktop is deliberately gated by BOTH width and
+         * orientation/aspect ratio. This stops tablets and narrow desktop
+         * windows switching into the side-by-side layout too early.
+         */
+        .hero-shell {
+          width: min(100%, 900px);
+          margin-inline: auto;
+          padding: clamp(104px, 13svh, 144px) 16px 48px;
+        }
 
-      {/* Main Flex Container */}
-      <div className="relative z-10 w-full max-w-[1800px] mx-auto px-6 sm:px-10 lg:px-14 xl:px-20 py-10">
-        <div className="hero-layout w-full flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-6">
-          {/* LEFT: NAME + BUTTONS */}
-          <div className="hero-content w-full lg:w-[50%] shrink-0 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <div className="mb-8">
-              <h1 className="font-['Tenkai',sans-serif] font-black tracking-[2px] sm:tracking-[4px] text-white leading-none mb-1 select-none text-[clamp(3.5rem,6vw,7.5rem)]">
-                KULJEET
-              </h1>
+        .hero-layout {
+          display: flex;
+          width: 100%;
+          min-width: 0;
+          flex-direction: column;
+          align-items: center;
+          gap: clamp(28px, 5svh, 48px);
+        }
 
-              <h1 className="font-['Tenkai',sans-serif] font-black tracking-[2px] sm:tracking-[4px] text-white leading-none select-none text-[clamp(3.5rem,6vw,7.5rem)]">
-                SINGH
-              </h1>
-            </div>
+        .hero-identity {
+          width: 100%;
+          min-width: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
 
-            {/* Buttons */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-              <a
-                href="#Project"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/20 bg-white/3 text-white font-semibold text-xs sm:text-sm tracking-wide transition-all hover:bg-white/10 hover:border-white/40 backdrop-blur-md"
-              >
-                View Projects
-              </a>
-            </div>
-          </div>
+        .hero-name {
+          max-width: 100%;
+          margin: 0 0 clamp(22px, 4svh, 34px);
+          font-family: 'Tenkai', sans-serif;
+          font-size: clamp(2.35rem, 8.2vw, 5.4rem);
+          font-weight: 900;
+          line-height: .91;
+          letter-spacing: clamp(1px, .28vw, 3px);
+          white-space: nowrap;
+          user-select: none;
+        }
 
-          {/* CENTRE: 3D CANVAS */}
-          <div className="hero-canvas w-full lg:flex-1 lg:min-w-0 flex items-center justify-center">
-            <div className="relative w-full max-w-160 lg:max-w-175 h-[42vh] sm:h-[48vh] lg:h-[58vh] xl:h-[62vh] min-h-75 rounded-3xl border border-white/10 bg-linear-to-b from-white/3 to-transparent p-2 backdrop-blur-sm overflow-hidden flex items-center justify-center">
-              {/* Loading Overlay */}
-              {showLoader && (
-                <div
-                  className={`absolute inset-0 z-30 flex flex-col items-center justify-center p-6 bg-black/70 backdrop-blur-md transition-opacity duration-450 ease-out pointer-events-none ${
-                    isFadingOut ? "opacity-0" : "opacity-100"
-                  }`}
+        .hero-name span {
+          display: block;
+        }
+
+        .hero-showcase {
+          display: flex;
+          width: 100%;
+          min-width: 0;
+          flex-direction: column;
+          align-items: center;
+          gap: 12px;
+        }
+
+        .hero-canvas-frame {
+          position: relative;
+          width: 100%;
+          max-width: 760px;
+          min-width: 0;
+          height: clamp(270px, 43svh, 460px);
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,.10);
+          border-radius: 22px;
+          background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0));
+          box-shadow: 0 20px 80px rgba(0,0,0,.25);
+          isolation: isolate;
+        }
+
+        .hero-socials {
+          display: flex;
+          flex: 0 0 auto;
+          flex-direction: row;
+          align-items: center;
+          justify-content: center;
+          gap: 8px;
+          padding: 8px;
+          border: 1px solid rgba(255,255,255,.10);
+          border-radius: 999px;
+          background: rgba(255,255,255,.04);
+          box-shadow: 0 20px 60px rgba(0,0,0,.25);
+          backdrop-filter: blur(18px);
+        }
+
+        .hero-social-link {
+          display: flex;
+          width: 42px;
+          height: 42px;
+          flex: 0 0 42px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 999px;
+          transition: background .2s ease, transform .2s ease;
+        }
+
+        .hero-social-link img {
+          width: 24px;
+          height: 24px;
+          object-fit: contain;
+        }
+
+        .hero-social-link:hover {
+          transform: translateY(-2px);
+          background: rgba(255,255,255,.10);
+        }
+
+        .hero-social-link:focus-visible,
+        .hero-cta:focus-visible {
+          outline: 2px solid #d87aff;
+          outline-offset: 3px;
+        }
+
+        .hero-cta {
+          display: inline-flex;
+          min-height: 46px;
+          align-items: center;
+          justify-content: center;
+          padding: 0 26px;
+          border: 1px solid rgba(255,255,255,.20);
+          border-radius: 999px;
+          background: rgba(255,255,255,.03);
+          color: white;
+          font-size: 13px;
+          font-weight: 650;
+          letter-spacing: .02em;
+          backdrop-filter: blur(12px);
+          transition: background .2s ease, border-color .2s ease, transform .2s ease;
+        }
+
+        .hero-cta:hover {
+          border-color: rgba(255,255,255,.42);
+          background: rgba(255,255,255,.09);
+        }
+
+        /* Small phones: keep the canvas compact and prevent title overflow. */
+        @media (max-width: 380px) {
+          .hero-shell {
+            padding-inline: 12px;
+          }
+
+          .hero-name {
+            font-size: clamp(2.1rem, 9vw, 2.6rem);
+            letter-spacing: 1px;
+          }
+
+          .hero-canvas-frame {
+            height: clamp(250px, 40svh, 360px);
+            border-radius: 18px;
+          }
+        }
+
+        /*
+         * Wide portrait tablets and narrow windows remain stacked.
+         * The content is intentionally capped instead of stretching to
+         * the full 1000px+ viewport width.
+         */
+        @media (min-width: 700px) and (orientation: portrait) {
+          .hero-shell {
+            width: min(100%, 820px);
+            padding-inline: 28px;
+          }
+
+          .hero-name {
+            font-size: clamp(4rem, 7.2vw, 5.8rem);
+          }
+
+          .hero-canvas-frame {
+            height: clamp(360px, 43svh, 500px);
+          }
+        }
+
+        /*
+         * True desktop landscape only.
+         * 1240px minimum plus a landscape aspect ratio avoids the early
+         * breakpoint shift seen on portrait tablets and narrow windows.
+         */
+        @media (min-width: 1360px) and (min-height: 680px) and (orientation: landscape) and (min-aspect-ratio: 4/3) {
+          .hero-shell {
+            width: min(100%, 1360px);
+            padding: 112px 40px 72px;
+          }
+
+          .hero-layout {
+            display: grid;
+            grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
+            align-items: center;
+            column-gap: clamp(44px, 5.5vw, 92px);
+            row-gap: 0;
+          }
+
+          .hero-identity {
+            align-items: flex-start;
+            text-align: left;
+          }
+
+          .hero-name {
+            margin-bottom: 34px;
+            font-size: clamp(4.1rem, 5.1vw, 6.4rem);
+            letter-spacing: clamp(1px, .22vw, 3px);
+          }
+
+          .hero-showcase {
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px;
+          }
+
+          .hero-canvas-frame {
+            width: min(100%, 760px);
+            max-width: 760px;
+            height: clamp(380px, 54svh, 590px);
+            flex: 1 1 0;
+            border-radius: 26px;
+          }
+
+          .hero-socials {
+            flex-direction: column;
+            gap: 8px;
+            padding: 8px;
+          }
+
+          .hero-shell .hero-social-link {
+            width: 42px;
+            height: 42px;
+            flex-basis: 42px;
+          }
+        }
+
+        /* Short landscape laptops: reduce vertical footprint, keep two groups. */
+        @media (min-width: 1360px) and (max-height: 679px) and (orientation: landscape) {
+          .hero-shell {
+            width: min(100%, 1320px);
+            padding: 88px 32px 36px;
+          }
+
+          .hero-layout {
+            display: grid;
+            grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
+            align-items: center;
+            column-gap: clamp(32px, 4vw, 64px);
+          }
+
+          .hero-identity {
+            align-items: flex-start;
+            text-align: left;
+          }
+
+          .hero-name {
+            font-size: clamp(3.6rem, 4.5vw, 5.2rem);
+            margin-bottom: 26px;
+          }
+
+          .hero-showcase {
+            flex-direction: row;
+            align-items: center;
+            gap: 10px;
+          }
+
+          .hero-canvas-frame {
+            height: min(62svh, 440px);
+            min-height: 300px;
+            flex: 1 1 0;
+          }
+
+          .hero-socials {
+            flex-direction: column;
+          }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .hero-social-link,
+          .hero-cta {
+            transition: none;
+          }
+        }
+      `}</style>
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-[32%] h-[min(90vw,850px)] w-[min(90vw,850px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d87aff]/[0.08] blur-[130px]"
+      />
+
+      <div className="hero-shell relative z-10">
+        <div className="hero-layout">
+          {/* GROUP 1: IDENTITY */}
+          <section className="hero-identity">
+            <h1 className="hero-name text-white">
+              <span>KULJEET</span>
+              <span>SINGH</span>
+            </h1>
+
+            <a href="#Project" className="hero-cta">
+              View Projects
+            </a>
+          </section>
+
+          {/* GROUP 2: CANVAS + SOCIALS */}
+          <section
+            className="hero-showcase"
+            aria-label="Interactive desk and social links"
+          >
+            <div className="hero-canvas-frame">
+              <ModelErrorBoundary onError={handleModelError}>
+                <Canvas
+                  className="h-full w-full cursor-grab active:cursor-grabbing"
+                  style={{ touchAction: "pan-y" }}
+                  gl={{
+                    antialias: true,
+                    alpha: true,
+                    powerPreference: "high-performance",
+                    failIfMajorPerformanceCaveat: false,
+                  }}
+                  // Render at native DPR on standard screens and up to 2x on
+                  // high-density displays for sharper edges and textures.
+                  dpr={[1, 2]}
+                  shadows={false}
+                  camera={{
+                    position: [50, 25, 50],
+                    fov: 50,
+                    near: 0.01,
+                    far: 10000,
+                  }}
+                  onCreated={({ gl }) => {
+                    gl.setClearColor(0x000000, 0);
+                  }}
                 >
-                  <div className="flex flex-col items-center text-center max-w-60 w-full p-5 rounded-2xl border border-white/10 bg-white/3 shadow-2xl">
-                    <div className="relative mb-4 flex items-center justify-center">
-                      <div className="h-16 w-16 rounded-full border-2 border-white/10" />
+                  <ambientLight intensity={0.5} />
+                  <directionalLight position={[8, 10, 8]} intensity={1.1} />
+                  <pointLight
+                    position={[-10, 2, -10]}
+                    intensity={0.4}
+                    color="#d87aff"
+                  />
 
-                      <div className="absolute h-16 w-16 rounded-full border-2 border-t-[#d87aff] border-r-[#d87aff]/50 border-b-transparent border-l-transparent animate-spin shadow-[0_0_20px_rgba(216,122,255,0.4)]" />
+                  <Suspense fallback={null}>
+                    <DeskModel onLoaded={handleModelLoaded} />
+                  </Suspense>
 
-                      <div className="absolute font-mono text-base font-black text-white">
-                        {displayProgress}%
-                      </div>
-                    </div>
+                  {modelObject && (
+                    <CameraFit object={modelObject} controlsRef={controlsRef} />
+                  )}
 
-                    <div className="text-xs font-bold text-white tracking-wide mb-1">
-                      Interactive 3D Desk
-                    </div>
+                  <OrbitControls
+                    ref={controlsRef}
+                    enablePan={false}
+                    enableZoom={false}
+                    minPolarAngle={Math.PI / 6}
+                    maxPolarAngle={Math.PI / 2}
+                    rotateSpeed={0.8}
+                    enableDamping
+                    dampingFactor={0.06}
+                  />
+                </Canvas>
+              </ModelErrorBoundary>
 
-                    <div className="text-[11px] font-mono text-zinc-400 mb-3 truncate w-full">
-                      {displayProgress < 100
-                        ? "Downloading model..."
-                        : "Finalizing scene..."}
-                    </div>
+              {showLoader && !modelError && (
+                <LoadingOverlay
+                  progress={displayProgress}
+                  fadingOut={isFadingOut}
+                />
+              )}
 
-                    <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-                      <div
-                        className="h-full bg-linear-to-r from-violet-500 via-[#d87aff] to-cyan-400 rounded-full transition-all duration-200 ease-out shadow-[0_0_10px_rgba(216,122,255,0.6)]"
-                        style={{
-                          width: `${Math.max(5, displayProgress)}%`,
-                        }}
-                      />
-                    </div>
+              {modelError && (
+                <div
+                  role="alert"
+                  className="absolute inset-0 z-30 flex items-center justify-center bg-black/90 p-5 text-center backdrop-blur-md"
+                >
+                  <div className="max-w-xs">
+                    <p className="mb-2 text-sm font-semibold text-white">
+                      3D preview unavailable
+                    </p>
+                    <p className="text-xs leading-relaxed text-zinc-400">
+                      {modelError}
+                    </p>
                   </div>
                 </div>
               )}
 
-              {/* 3D Scene */}
-              <Canvas
-                className="w-full h-full cursor-grab active:cursor-grabbing"
-                gl={{
-                  antialias: true,
-                  alpha: true,
-                  powerPreference: "high-performance",
-                }}
-                dpr={[1, 2]}
-                shadows={false}
-                camera={{
-                  position: [50, 25, 50],
-                  fov: 50,
-                }}
-              >
-                <ambientLight intensity={0.5} />
-
-                <directionalLight position={[8, 10, 8]} intensity={1.1} />
-
-                <pointLight
-                  position={[-10, 2, -10]}
-                  intensity={0.4}
-                  color="#d87aff"
-                />
-
-                <Suspense fallback={null}>
-                  <DeskModel onLoaded={handleModelLoaded} />
-                </Suspense>
-
-                {modelObject && (
-                  <CameraFit
-                    object={modelObject}
-                    controlsRef={controlsRef}
-                    isPortrait={isPortrait}
-                  />
-                )}
-
-                <OrbitControls
-                  ref={controlsRef}
-                  enablePan={false}
-                  enableZoom={false}
-                  minPolarAngle={Math.PI / 6}
-                  maxPolarAngle={Math.PI / 2}
-                  rotateSpeed={0.8}
-                />
-              </Canvas>
-
-              {/* Interaction Hint */}
-              {isModelReady && !showLoader && (
-                <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 pointer-events-none flex items-center gap-2 rounded-full border border-white/10 bg-black/60 px-3.5 py-1 text-[10px] sm:text-[11px] font-mono text-zinc-300 backdrop-blur-md shadow-lg animate-in fade-in duration-500">
-                  <span className="text-[#d87aff] animate-pulse">✦</span>
+              {isModelReady && !showLoader && !modelError && (
+                <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-black/60 px-3 py-1.5 font-mono text-[9px] text-zinc-300 shadow-lg backdrop-blur-md sm:text-[11px]">
+                  <span className="text-[#d87aff]" aria-hidden="true">
+                    ✦
+                  </span>
                   <span>Drag to rotate 3D desk</span>
-                  <span className="text-[#d87aff] animate-pulse">✦</span>
+                  <span className="text-[#d87aff]" aria-hidden="true">
+                    ✦
+                  </span>
                 </div>
               )}
             </div>
-          </div>
 
-          {/* RIGHT: SOCIAL LINKS */}
-          <aside
-            aria-label="Social links"
-            className="hero-socials flex flex-row lg:flex-col items-center justify-center gap-4 bg-white/4 border border-white/10 p-2.5 rounded-full backdrop-blur-xl shadow-2xl shrink-0"
-          >
-            {socials.map((s) => (
-              <a
-                key={s.alt}
-                href={s.href}
-                {...(s.external
-                  ? {
-                      target: "_blank",
-                      rel: "noopener noreferrer",
-                    }
-                  : {})}
-                className="p-2 rounded-full hover:bg-white/10 transition-all hover:scale-110 active:scale-95"
-                title={s.title}
-              >
-                <img
-                  src={s.src}
-                  alt={s.alt}
-                  className="w-6 h-6 object-contain"
-                />
-              </a>
-            ))}
-          </aside>
+            <aside className="hero-socials" aria-label="Social links">
+              {socials.map((social) => (
+                <a
+                  key={social.alt}
+                  href={social.href}
+                  target={social.external ? "_blank" : undefined}
+                  rel={social.external ? "noopener noreferrer" : undefined}
+                  aria-label={social.title}
+                  title={social.title}
+                  className="hero-social-link"
+                >
+                  <img
+                    src={social.src}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </a>
+              ))}
+            </aside>
+          </section>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 
