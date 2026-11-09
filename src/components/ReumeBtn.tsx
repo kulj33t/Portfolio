@@ -2,177 +2,403 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const ResumeBtn: React.FC = () => {
-  const [isLandscape, setIsLandscape] = useState(
-    window.innerWidth >= window.innerHeight
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isTouch, setIsTouch] = useState(
+    window.matchMedia("(hover: none)").matches,
   );
 
   useEffect(() => {
-    const handleResize = () =>
-      setIsLandscape(window.innerWidth >= window.innerHeight);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    const media = window.matchMedia("(hover: none)");
+
+    const handleChange = () => {
+      setIsTouch(media.matches);
+      setIsExpanded(false);
+    };
+
+    media.addEventListener("change", handleChange);
+
+    return () => media.removeEventListener("change", handleChange);
   }, []);
+
+  useEffect(() => {
+    if (!isTouch || !isExpanded) return;
+
+    const handleOutsideClick = (e: PointerEvent) => {
+      const target = e.target as HTMLElement;
+
+      if (!target.closest(".resume-btn")) {
+        setIsExpanded(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handleOutsideClick);
+
+    return () =>
+      document.removeEventListener("pointerdown", handleOutsideClick);
+  }, [isTouch, isExpanded]);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isTouch && !isExpanded) {
+      e.preventDefault();
+      setIsExpanded(true);
+    }
+  };
+
+  const particles = Array.from({ length: 24 }, (_, i) => i);
 
   return (
     <>
       <Link
         to="/resume"
-        className={`resume-btn${isLandscape ? " landscape" : ""}`}
+        onClick={handleClick}
+        onMouseEnter={() => !isTouch && setIsExpanded(true)}
+        onMouseLeave={() => !isTouch && setIsExpanded(false)}
+        className={`resume-btn ${isExpanded ? "expanded" : ""}`}
         aria-label="View and download resume"
+        aria-expanded={isExpanded}
       >
-        {/* Floating spark particles */}
+        {/* Particles */}
         <span className="sparks" aria-hidden="true">
-          <span className="spark s1" />
-          <span className="spark s2" />
-          <span className="spark s3" />
-          <span className="spark s4" />
-          <span className="spark s5" />
+          {particles.map((i) => (
+            <span key={i} className={`spark spark-${i + 1}`} />
+          ))}
         </span>
 
-        {/* CV icon (visible by default) */}
+        {/* Icon */}
         <span className="btn-icon">
           <img src="/icons/cv.png" alt="" draggable={false} />
         </span>
 
-        {/* Label (revealed on hover in landscape) */}
+        {/* Label */}
         <span className="btn-label">View Resume</span>
       </Link>
 
       <style>{`
-        /* ─── Button shell ─────────────────────────────────────── */
+        /* =========================================
+           BUTTON
+        ========================================= */
+
         .resume-btn {
           position: fixed;
           bottom: 5vh;
           right: 3vw;
           z-index: 200;
+
           display: inline-flex;
           align-items: center;
           justify-content: center;
-          gap: 0;
+
           width: 58px;
           height: 58px;
           border-radius: 50%;
-          border: 1.5px solid rgba(255,255,255,0.18);
-          background: rgba(255,255,255,0.96);
+
+          border: 1px solid rgba(255,255,255,0.3);
+          background: rgba(255,255,255,0.97);
           color: #111;
+
           text-decoration: none;
           font-weight: 650;
           font-size: 0.875rem;
+
           cursor: pointer;
           overflow: visible;
-          transition:
-            width 0.42s cubic-bezier(.4,0,.2,1),
-            border-radius 0.42s cubic-bezier(.4,0,.2,1),
-            background 0.42s ease,
-            color 0.3s ease,
-            border-color 0.3s ease,
-            box-shadow 0.3s ease,
-            transform 0.3s ease;
+          isolation: isolate;
+
           box-shadow:
-            0 0 0 0 rgba(216,122,255,0),
-            0 4px 24px rgba(0,0,0,0.3);
+            0 0 12px rgba(255,255,255,0.35),
+            0 0 28px rgba(255,255,255,0.15),
+            0 5px 22px rgba(0,0,0,0.28);
+
+          transition:
+            width 0.55s cubic-bezier(.22,1,.36,1),
+            border-radius 0.55s cubic-bezier(.22,1,.36,1),
+            background 0.35s ease,
+            color 0.35s ease,
+            border-color 0.35s ease,
+            box-shadow 0.4s ease,
+            transform 0.4s cubic-bezier(.22,1,.36,1),
+            gap 0.4s ease;
         }
 
-        /* ─── Landscape hover expand ───────────────────────────── */
-        .resume-btn.landscape:hover {
+        /* =========================================
+           EXPANDED BUTTON
+        ========================================= */
+
+        .resume-btn.expanded {
           width: 190px;
-          border-radius: 2rem;
+          border-radius: 40px;
+
           background: #0a0a0a;
           color: #fff;
-          border-color: rgba(216,122,255,0.55);
+
+          border-color: rgba(255,255,255,0.01);
+
           box-shadow:
-            0 0 0 4px rgba(216,122,255,0.12),
-            0 0 32px rgba(216,122,255,0.35),
-            0 8px 32px rgba(0,0,0,0.5);
-          transform: translateY(-3px);
-          gap: 0.55rem;
+            0 0 16px rgba(255,255,255,0.45),
+            0 0 40px rgba(255,255,255,0.2),
+            0 4px 8px rgba(0,0,0,0.5);
+
+          transform: translateY(-1px);
+          gap: 10px;
         }
 
-        /* ─── CV icon ──────────────────────────────────────────── */
+        /* =========================================
+           ICON
+        ========================================= */
+
         .btn-icon {
+          position: relative;
+          z-index: 2;
+
           display: flex;
           align-items: center;
           justify-content: center;
           flex-shrink: 0;
-          transition: opacity 0.25s ease, transform 0.25s ease;
+
+          transition:
+            opacity 0.35s ease,
+            transform 0.4s ease,
+            width 0.4s ease;
         }
+
         .btn-icon img {
           width: 28px;
           height: 28px;
           object-fit: contain;
           pointer-events: none;
-          transition: filter 0.3s ease;
         }
-        .resume-btn.landscape:hover .btn-icon {
+
+        .resume-btn.expanded .btn-icon {
           opacity: 0;
           width: 0;
           overflow: hidden;
-          pointer-events: none;
+          transform: scale(0.5);
         }
-        .resume-btn.landscape:hover .btn-icon img {
+
+        .resume-btn.expanded .btn-icon img {
           width: 0;
         }
 
-        /* ─── Label ────────────────────────────────────────────── */
+        /* =========================================
+           LABEL
+        ========================================= */
+
         .btn-label {
+          position: relative;
+          z-index: 2;
+
           white-space: nowrap;
           overflow: hidden;
+
           max-width: 0;
           opacity: 0;
           visibility: hidden;
-          letter-spacing: 0.03em;
+
+          letter-spacing: 0.04em;
+
           transition:
-            max-width 0.38s cubic-bezier(.4,0,.2,1),
-            opacity 0.3s ease 0.08s,
+            max-width 0.45s cubic-bezier(.22,1,.36,1),
+            opacity 0.3s ease,
             visibility 0s linear 0.4s;
         }
-        .resume-btn.landscape:hover .btn-label {
-          max-width: 160px;
+
+        .resume-btn.expanded .btn-label {
+          max-width: 140px;
           opacity: 1;
           visibility: visible;
+
           transition:
-            max-width 0.38s cubic-bezier(.4,0,.2,1),
-            opacity 0.3s ease 0.08s,
-            visibility 0s linear 0s;
+            max-width 0.45s cubic-bezier(.22,1,.36,1),
+            opacity 0.35s ease 0.12s,
+            visibility 0s;
         }
 
-        /* ─── Spark container ──────────────────────────────────── */
+        /* =========================================
+           PARTICLE CONTAINER
+           Behind button, but outside its surface
+        ========================================= */
+
         .sparks {
           position: absolute;
-          top: -6px;
-          right: -6px;
-          width: 0;
-          height: 0;
+          inset: -45px;
+          z-index: -1;
+
           pointer-events: none;
+          overflow: visible;
         }
 
-        /* ─── Individual spark ─────────────────────────────────── */
+        /* =========================================
+           PARTICLES
+        ========================================= */
+
         .spark {
           position: absolute;
+          left: 50%;
+          top: 50%;
+
+          width: 4px;
+          height: 4px;
           border-radius: 50%;
-          animation: floatSpark linear infinite;
+
           opacity: 0;
+
+          background: #fff;
+          box-shadow: 0 0 8px rgba(255,255,255,0.9);
+
+          --sx: 0px;
+          --sy: 0px;
+          --ex: 0px;
+          --ey: -70px;
+
+          animation:
+            particleFloat var(--duration) ease-out infinite;
+
+          animation-delay: var(--delay);
+          will-change: transform, opacity;
         }
 
-        /* Sizes & colours — alternating purple / white / cyan */
-        .s1 { width: 5px; height: 5px; background: #d87aff; bottom: 0; left: 2px;  animation-duration: 2.1s; animation-delay: 0.0s; }
-        .s2 { width: 4px; height: 4px; background: #fff;    bottom: 0; left: -6px; animation-duration: 2.5s; animation-delay: 0.5s; }
-        .s3 { width: 3px; height: 3px; background: #7af8ff; bottom: 0; left: -2px; animation-duration: 1.8s; animation-delay: 1.0s; }
-        .s4 { width: 4px; height: 4px; background: #d87aff; bottom: 0; left: -10px;animation-duration: 2.3s; animation-delay: 1.5s; }
-        .s5 { width: 3px; height: 3px; background: #fff;    bottom: 0; left: 6px;  animation-duration: 2.0s; animation-delay: 0.8s; }
+        /* Particle colours */
 
-        @keyframes floatSpark {
-          0%   { transform: translateY(0)   translateX(0)    scale(1);   opacity: 0;   }
-          10%  { opacity: 1; }
-          60%  { opacity: 0.7; }
-          100% { transform: translateY(-28px) translateX(var(--drift, 3px)) scale(0.4); opacity: 0; }
+        .spark:nth-child(3n) {
+          background: #fff;
+          box-shadow: 0 0 9px rgba(255,255,255,0.9);
         }
 
-        .s1 { --drift:  3px; }
-        .s2 { --drift: -4px; }
-        .s3 { --drift:  1px; }
-        .s4 { --drift: -2px; }
-        .s5 { --drift:  5px; }
+        .spark:nth-child(3n + 1) {
+          background: #d87aff;
+          box-shadow: 0 0 8px rgba(216,122,255,0.8);
+        }
+
+        .spark:nth-child(3n + 2) {
+          background: #7af8ff;
+          box-shadow: 0 0 8px rgba(122,248,255,0.8);
+        }
+
+        /* =========================================
+           PARTICLE TRAJECTORIES
+           Starting just outside the button edge
+        ========================================= */
+
+        .spark-1  { --sx: 0px;   --sy: -31px; --ex: -15px; --ey: -85px; --delay: 0s;    --duration: 2.1s; }
+        .spark-2  { --sx: 22px;  --sy: -22px; --ex: 65px;  --ey: -70px; --delay: .2s;   --duration: 2.3s; }
+        .spark-3  { --sx: 31px;  --sy: 0px;   --ex: 90px;  --ey: -10px; --delay: .4s;   --duration: 2s; }
+        .spark-4  { --sx: 22px;  --sy: 22px;  --ex: 75px;  --ey: 65px;  --delay: .6s;   --duration: 2.4s; }
+        .spark-5  { --sx: 0px;   --sy: 31px;  --ex: 10px;  --ey: 90px;  --delay: .8s;   --duration: 2.1s; }
+        .spark-6  { --sx: -22px; --sy: 22px;  --ex: -70px; --ey: 75px;  --delay: 1s;    --duration: 2.3s; }
+        .spark-7  { --sx: -31px; --sy: 0px;   --ex: -90px; --ey: -10px; --delay: .3s;   --duration: 2.2s; }
+        .spark-8  { --sx: -22px; --sy: -22px; --ex: -75px; --ey: -70px; --delay: .7s;   --duration: 2.4s; }
+        .spark-9  { --sx: 10px;  --sy: -30px; --ex: 40px;  --ey: -100px;--delay: 1.2s;  --duration: 2.1s; }
+        .spark-10 { --sx: 30px;  --sy: 10px;  --ex: 100px; --ey: 35px;  --delay: .9s;   --duration: 2.2s; }
+        .spark-11 { --sx: -10px; --sy: 30px;  --ex: -40px; --ey: 100px; --delay: 1.4s;  --duration: 2.3s; }
+        .spark-12 { --sx: -30px; --sy: -10px; --ex: -100px;--ey: -40px; --delay: 1.1s;  --duration: 2s; }
+        .spark-13 { --sx: 15px;  --sy: -27px; --ex: 55px;  --ey: -105px;--delay: 1.5s;  --duration: 2.4s; }
+        .spark-14 { --sx: 27px;  --sy: 15px;  --ex: 105px; --ey: 55px;  --delay: 1.7s;  --duration: 2.2s; }
+        .spark-15 { --sx: -15px; --sy: 27px;  --ex: -55px; --ey: 105px; --delay: 1.3s;  --duration: 2.5s; }
+        .spark-16 { --sx: -27px; --sy: -15px; --ex: -105px;--ey: -55px; --delay: 1.6s;  --duration: 2.1s; }
+        .spark-17 { --sx: 0px;   --sy: -31px; --ex: 25px;  --ey: -110px;--delay: .5s;   --duration: 2.5s; }
+        .spark-18 { --sx: 31px;  --sy: 0px;   --ex: 110px; --ey: 15px;  --delay: 1.8s;  --duration: 2.2s; }
+        .spark-19 { --sx: 0px;   --sy: 31px;  --ex: -20px; --ey: 110px; --delay: .1s;   --duration: 2.4s; }
+        .spark-20 { --sx: -31px; --sy: 0px;   --ex: -110px;--ey: -20px; --delay: 1.9s;  --duration: 2.3s; }
+        .spark-21 { --sx: 20px;  --sy: -24px; --ex: 85px;  --ey: -95px; --delay: .9s;   --duration: 2.5s; }
+        .spark-22 { --sx: 24px;  --sy: 20px;  --ex: 95px;  --ey: 85px;  --delay: 1.4s;  --duration: 2.1s; }
+        .spark-23 { --sx: -20px; --sy: 24px;  --ex: -85px; --ey: 95px;  --delay: .6s;   --duration: 2.4s; }
+        .spark-24 { --sx: -24px; --sy: -20px; --ex: -95px; --ey: -85px; --delay: 1.2s;  --duration: 2.2s; }
+
+        /* =========================================
+           NORMAL PARTICLE ANIMATION
+        ========================================= */
+
+        @keyframes particleFloat {
+          0% {
+            transform: translate(var(--sx), var(--sy)) scale(.3);
+            opacity: 0;
+          }
+
+          15% {
+            opacity: 1;
+          }
+
+          65% {
+            opacity: .8;
+          }
+
+          100% {
+            transform: translate(var(--ex), var(--ey)) scale(.15);
+            opacity: 0;
+          }
+        }
+
+        /* =========================================
+           EXPANDED PARTICLES
+           Wider and more energetic spread
+        ========================================= */
+
+        .resume-btn.expanded .spark {
+          animation-name: expandedParticleFloat;
+          animation-duration: 1.8s;
+        }
+
+        @keyframes expandedParticleFloat {
+          0% {
+            transform: translate(var(--sx), var(--sy)) scale(.4);
+            opacity: 0;
+          }
+
+          15% {
+            opacity: 1;
+          }
+
+          65% {
+            opacity: .9;
+          }
+
+          100% {
+            transform: translate(
+              calc(var(--ex) * 1.7),
+              calc(var(--ey) * 1.7)
+            ) scale(.1);
+            opacity: 0;
+          }
+        }
+
+        /* =========================================
+           DESKTOP
+        ========================================= */
+
+        @media (hover: hover) and (pointer: fine) {
+          .resume-btn:hover {
+            transform: translateY(-3px);
+          }
+        }
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 600px) {
+          .resume-btn {
+            right: 5vw;
+            bottom: 4vh;
+          }
+
+          .resume-btn.expanded {
+            width: 175px;
+          }
+        }
+
+        /* =========================================
+           ACCESSIBILITY
+        ========================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+          .resume-btn,
+          .btn-icon,
+          .btn-label,
+          .spark {
+            animation: none !important;
+            transition: none !important;
+          }
+        }
       `}</style>
     </>
   );

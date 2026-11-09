@@ -4,10 +4,16 @@ const Header: React.FC = () => {
   return (
     <div style={styles.wrapper}>
       <header style={styles.container}>
-        <a href="#hero" style={styles.logo}>KS</a>
+        <a href="#hero" style={styles.logo}>
+          KS
+        </a>
         <nav style={styles.nav}>
-          <a href="#about" style={styles.link}>ABOUT</a>
-          <a href="#footer" style={styles.link}>LET'S CONNECT</a>
+          <a href="#about" style={styles.link}>
+            ABOUT
+          </a>
+          <a href="#footer" style={styles.link}>
+            LET'S CONNECT
+          </a>
         </nav>
       </header>
     </div>
@@ -46,7 +52,7 @@ const styles: { [key: string]: React.CSSProperties } = {
   },
   nav: {
     display: "flex",
-    gap: "clamp(1rem, 3vw, 3rem)", 
+    gap: "clamp(1rem, 3vw, 3rem)",
   },
   link: {
     color: "#ccc",

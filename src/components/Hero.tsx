@@ -15,7 +15,6 @@ import { PerspectiveCamera } from "three";
 
 const MODEL_GLB = "/models/desk.glb";
 
-// --- 3D Desk Model Component ---
 interface DeskModelProps {
   onLoaded?: (obj: THREE.Object3D) => void;
 }
@@ -47,7 +46,6 @@ function DeskModel({ onLoaded }: DeskModelProps) {
   );
 }
 
-// --- Dynamic Camera Fitting ---
 interface CameraFitProps {
   object: THREE.Object3D | null;
   controlsRef: React.RefObject<OrbitControlsImpl | null>;
@@ -72,7 +70,6 @@ function CameraFit({ object, controlsRef, isPortrait }: CameraFitProps) {
 
     let dist = Math.abs(maxDim / (2 * Math.tan(fov / 2)));
 
-    // More breathing room for the rectangular canvas
     const extraFactor = isPortrait ? 1.25 : 1.15;
 
     dist *= extraFactor;
@@ -97,7 +94,6 @@ function CameraFit({ object, controlsRef, isPortrait }: CameraFitProps) {
   return null;
 }
 
-// --- Social links shared data ---
 const socials = [
   {
     href: "mailto:kulj33tsingh@gmail.com",
@@ -121,7 +117,6 @@ const socials = [
   },
 ];
 
-// --- Main Hero Component ---
 const Hero: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(false);
   const [modelObject, setModelObject] = useState<THREE.Object3D | null>(null);
@@ -135,7 +130,6 @@ const Hero: React.FC = () => {
   const { progress } = useProgress();
   const displayProgress = Math.min(100, Math.round(progress));
 
-  // --- Orientation Detection (Camera Only) ---
   useEffect(() => {
     const checkOrientation = () => {
       const portrait =
@@ -155,7 +149,6 @@ const Hero: React.FC = () => {
     };
   }, []);
 
-  // --- Loader Fade Out ---
   useEffect(() => {
     if (isModelReady) {
       setIsFadingOut(true);
@@ -168,7 +161,6 @@ const Hero: React.FC = () => {
     }
   }, [isModelReady]);
 
-  // --- Stable Model Loading Callback ---
   const handleModelLoaded = useCallback((obj: THREE.Object3D) => {
     setModelObject(obj);
     setIsModelReady(true);
