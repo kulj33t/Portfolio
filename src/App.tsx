@@ -9,6 +9,7 @@ import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import ResumeBtn from "./components/ReumeBtn";
 import DotFiles from './pages/DotFiles';
+import ResumePage from './pages/ResumePage';
 import "./App.css";
 
 const Home: React.FC = () => (
@@ -50,6 +51,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/dotFiles" element={<DotFiles />} />
+            <Route path="/resume" element={<ResumePage />} />
           </Routes>
         </Router>
       </main>

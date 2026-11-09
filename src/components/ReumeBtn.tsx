@@ -1,161 +1,179 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 const ResumeBtn: React.FC = () => {
-  const resumeLink =
-    "https://drive.google.com/file/d/1KZ1iOd4vLc4oBhSROqAN5c8GkVCV91_U/view?usp=sharing";
-
-
-  const [isPortrait, setIsPortrait] = useState(window.innerWidth < window.innerHeight);
-
+  const [isLandscape, setIsLandscape] = useState(
+    window.innerWidth >= window.innerHeight
+  );
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsPortrait(window.innerWidth < window.innerHeight);
-    };
+    const handleResize = () =>
+      setIsLandscape(window.innerWidth >= window.innerHeight);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <>
-      <a
-        href={resumeLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`resume-btn ${!isPortrait ? "landscape-hover" : ""}`}
+      <Link
+        to="/resume"
+        className={`resume-btn${isLandscape ? " landscape" : ""}`}
+        aria-label="View and download resume"
       >
-        <span className="stars">
-          <span className="star star1" />
-          <span className="star star2" />
-          <span className="star star3" />
+        {/* Floating spark particles */}
+        <span className="sparks" aria-hidden="true">
+          <span className="spark s1" />
+          <span className="spark s2" />
+          <span className="spark s3" />
+          <span className="spark s4" />
+          <span className="spark s5" />
         </span>
 
-        <span className="resume-icon">
-          <img src="/icons/cv.png" alt="Resume" />
+        {/* CV icon (visible by default) */}
+        <span className="btn-icon">
+          <img src="/icons/cv.png" alt="" draggable={false} />
         </span>
 
-        <span className="resume-text">Download Resume</span>
-      </a>
+        {/* Label (revealed on hover in landscape) */}
+        <span className="btn-label">View Resume</span>
+      </Link>
 
-      <style>
-        {`
-          .resume-btn {
-            position: fixed;
-            bottom: 5vh;
-            right: 3vw;
-            background: white;
-            color: #111;
-            text-decoration: none;
-            cursor: pointer;
-            border: 2px solid transparent;
-            z-index: 200;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.4s ease;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
-            transform-origin: center right;
-            font-weight: 600;
-            font-size: 1rem;
-          }
+      <style>{`
+        /* ─── Button shell ─────────────────────────────────────── */
+        .resume-btn {
+          position: fixed;
+          bottom: 5vh;
+          right: 3vw;
+          z-index: 200;
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0;
+          width: 58px;
+          height: 58px;
+          border-radius: 50%;
+          border: 1.5px solid rgba(255,255,255,0.18);
+          background: rgba(255,255,255,0.96);
+          color: #111;
+          text-decoration: none;
+          font-weight: 650;
+          font-size: 0.875rem;
+          cursor: pointer;
+          overflow: visible;
+          transition:
+            width 0.42s cubic-bezier(.4,0,.2,1),
+            border-radius 0.42s cubic-bezier(.4,0,.2,1),
+            background 0.42s ease,
+            color 0.3s ease,
+            border-color 0.3s ease,
+            box-shadow 0.3s ease,
+            transform 0.3s ease;
+          box-shadow:
+            0 0 0 0 rgba(216,122,255,0),
+            0 4px 24px rgba(0,0,0,0.3);
+        }
 
-          /* Only apply hover effect if landscape */
-          .landscape-hover:hover {
-            width: 220px;
-            padding: 1rem 2rem;
-            border-radius: 2rem;
-            background: rgba(20, 20, 20, 0.95);
-            color: #fff;
-            border-color: #fff;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
-            transform: translateY(-4px) scale(1.05);
-          }
+        /* ─── Landscape hover expand ───────────────────────────── */
+        .resume-btn.landscape:hover {
+          width: 190px;
+          border-radius: 2rem;
+          background: #0a0a0a;
+          color: #fff;
+          border-color: rgba(216,122,255,0.55);
+          box-shadow:
+            0 0 0 4px rgba(216,122,255,0.12),
+            0 0 32px rgba(216,122,255,0.35),
+            0 8px 32px rgba(0,0,0,0.5);
+          transform: translateY(-3px);
+          gap: 0.55rem;
+        }
 
-          .resume-icon {
-            display: flex;
-            justify-content: center; 
-            align-items: center;
-            width: 100%;
-            height: 100%;
-          }
+        /* ─── CV icon ──────────────────────────────────────────── */
+        .btn-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+          transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+        .btn-icon img {
+          width: 28px;
+          height: 28px;
+          object-fit: contain;
+          pointer-events: none;
+          transition: filter 0.3s ease;
+        }
+        .resume-btn.landscape:hover .btn-icon {
+          opacity: 0;
+          width: 0;
+          overflow: hidden;
+          pointer-events: none;
+        }
+        .resume-btn.landscape:hover .btn-icon img {
+          width: 0;
+        }
 
-          .resume-icon img {
-            height:32px;
-            width:32px;
-            transition: all 0.3s ease;
-            margin-left:12px;
-          }
+        /* ─── Label ────────────────────────────────────────────── */
+        .btn-label {
+          white-space: nowrap;
+          overflow: hidden;
+          max-width: 0;
+          opacity: 0;
+          visibility: hidden;
+          letter-spacing: 0.03em;
+          transition:
+            max-width 0.38s cubic-bezier(.4,0,.2,1),
+            opacity 0.3s ease 0.08s,
+            visibility 0s linear 0.4s;
+        }
+        .resume-btn.landscape:hover .btn-label {
+          max-width: 160px;
+          opacity: 1;
+          visibility: visible;
+          transition:
+            max-width 0.38s cubic-bezier(.4,0,.2,1),
+            opacity 0.3s ease 0.08s,
+            visibility 0s linear 0s;
+        }
 
-          .resume-text {
-            margin-left: 0.6rem;
-            white-space: nowrap;
-            opacity: 0;
-            max-width: 0px;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            visibility: hidden;
-          }
+        /* ─── Spark container ──────────────────────────────────── */
+        .sparks {
+          position: absolute;
+          top: -6px;
+          right: -6px;
+          width: 0;
+          height: 0;
+          pointer-events: none;
+        }
 
-          .landscape-hover:hover .resume-text {
-            opacity: 1;
-            max-width: 200px;
-            visibility: visible;
-          }
+        /* ─── Individual spark ─────────────────────────────────── */
+        .spark {
+          position: absolute;
+          border-radius: 50%;
+          animation: floatSpark linear infinite;
+          opacity: 0;
+        }
 
-          .landscape-hover:hover .resume-icon img {
-            opacity: 0;
-            width: 0px;
-            height: 0px;
-          }
+        /* Sizes & colours — alternating purple / white / cyan */
+        .s1 { width: 5px; height: 5px; background: #d87aff; bottom: 0; left: 2px;  animation-duration: 2.1s; animation-delay: 0.0s; }
+        .s2 { width: 4px; height: 4px; background: #fff;    bottom: 0; left: -6px; animation-duration: 2.5s; animation-delay: 0.5s; }
+        .s3 { width: 3px; height: 3px; background: #7af8ff; bottom: 0; left: -2px; animation-duration: 1.8s; animation-delay: 1.0s; }
+        .s4 { width: 4px; height: 4px; background: #d87aff; bottom: 0; left: -10px;animation-duration: 2.3s; animation-delay: 1.5s; }
+        .s5 { width: 3px; height: 3px; background: #fff;    bottom: 0; left: 6px;  animation-duration: 2.0s; animation-delay: 0.8s; }
 
-          .resume-btn .stars {
-            position: absolute;
-            top: -15px;
-            right: -10px;
-            pointer-events: none;
-          }
+        @keyframes floatSpark {
+          0%   { transform: translateY(0)   translateX(0)    scale(1);   opacity: 0;   }
+          10%  { opacity: 1; }
+          60%  { opacity: 0.7; }
+          100% { transform: translateY(-28px) translateX(var(--drift, 3px)) scale(0.4); opacity: 0; }
+        }
 
-          .star {
-            position: absolute;
-            width: 8px; 
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(255, 255, 255, 0.9);
-            animation: twinkle 2s infinite ease-in-out;
-          }
-
-          .star1 {
-            top: 0;
-            left: 0;
-            animation-delay: 0s;
-          }
-          .star2 {
-            top: 15px;
-            left: -10px;
-            animation-delay: 0.5s;
-          }
-          .star3 {
-            top: -10px;
-            left: -18px;
-            animation-delay: 1s;
-          }
-
-          @keyframes twinkle {
-            0%, 100% {
-              transform: scale(1);
-              opacity: 1;
-            }
-            50% {
-              transform: scale(1.5);
-              opacity: 0.6;
-            }
-          }
-        `}
-      </style>
+        .s1 { --drift:  3px; }
+        .s2 { --drift: -4px; }
+        .s3 { --drift:  1px; }
+        .s4 { --drift: -2px; }
+        .s5 { --drift:  5px; }
+      `}</style>
     </>
   );
 };

@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: 'Tenkai';
-  src: url('/fonts/Tenkai.otf') format('opentype');
+  font-family: "Tenkai";
+  src: url("/fonts/Tenkai.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
 }
