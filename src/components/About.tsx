@@ -45,7 +45,7 @@ const FloatingIcon: React.FC<{
     <img
       src={src}
       alt=""
-      className="absolute select-none pointer-events-none"
+      className="pointer-events-none absolute select-none object-contain drop-shadow-[0_15px_25px_rgba(0,0,0,0.25)]"
       style={{
         top: `calc(50vh + ${position.y}vh - 3vh)`,
         left: `calc(50vw + ${position.x}vw)`,
@@ -65,7 +65,7 @@ const FloatingBackground: React.FC<{
   const iconSize = isPortrait ? 0.2 : 2.2;
 
   return (
-    <div className="absolute top-0 left-0 w-screen h-screen overflow-hidden z-0 pointer-events-none">
+    <div className="pointer-events-none absolute left-0 top-0 z-0 h-screen w-screen overflow-hidden">
       {iconPositions.map((pos, i) => (
         <FloatingIcon
           key={`icon-${i}`}
@@ -80,13 +80,14 @@ const FloatingBackground: React.FC<{
 
 const About: React.FC = () => {
   const [isPortrait, setIsPortrait] = useState(
-    window.innerHeight > window.innerWidth
+    window.innerHeight > window.innerWidth,
   );
 
   useEffect(() => {
     const handleResize = () => {
       setIsPortrait(window.innerHeight > window.innerWidth);
     };
+
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -102,22 +103,37 @@ const About: React.FC = () => {
             { x: -40, y: 0 },
             { x: 30, y: 0 },
           ],
-    [isPortrait]
+    [isPortrait],
   );
 
   return (
-    <div className="relative h-screen overflow-hidden">
-      <FloatingBackground iconPositions={iconPositions} isPortrait={isPortrait} />
-      <div className="h-screen w-screen flex justify-center items-center relative z-10 p-4 box-border">
-        <div className="w-[40vw] min-w-[300px] p-[2vh] rounded-[1.6vh] bg-white/5 backdrop-blur-[10px] text-[#ccc] shadow-[0_0.4vh_3vh_rgba(0,0,0,0.1)] flex flex-col items-center justify-center text-center">
-          <h1 className="font-['Tenkai',_sans-serif] text-[clamp(1.5rem,2vw+1vh,3rem)] mb-6 text-white tracking-[2px]">
-            Hi there
+    <div className="relative h-screen overflow-hidden bg-transparent">
+      <FloatingBackground
+        iconPositions={iconPositions}
+        isPortrait={isPortrait}
+      />
+
+      <div className="relative z-10 flex h-screen w-screen items-center justify-center p-4">
+        {/* About Card */}
+        <div className="group relative flex w-[40vw] min-w-75 flex-col items-center justify-center overflow-hidden rounded-3xl border border-white/12 bg-linear-to-br from-white/9 via-white/4 to-white/2 p-[clamp(1.5rem,4vw,3.5rem)] text-center text-[#ccc] shadow-[0_20px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl transition-all duration-500 hover:border-white/20 hover:shadow-[0_25px_90px_rgba(0,0,0,0.4)]">
+          {/* Decorative Glow */}
+          <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[#f5f0df]/[0.07] blur-[80px] transition-all duration-700 group-hover:bg-[#f5f0df]/12" />
+
+          <h1 className="font-['Tenkai',sans-serif] text-[clamp(2rem,3vw+1vh,3.5rem)] tracking-wide text-white">
+            Hey, I'm Kuljeet.
           </h1>
-          <p className="text-[clamp(0.8rem,2vw+1vh,1.2rem)] leading-[1.6] text-[#ddd]">
-            I’m Kuljeet Singh, a passionate web developer specializing in
-            building beautiful and performant web applications using React and
-            TypeScript. I love crafting clean, modern UI and enjoy solving
-            complex problems with elegant code.
+          {/* Top Accent */}
+          <div className="mb-6 flex items-center gap-2">
+            <span className="h-px w-8 bg-[#f5f0df]/40" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#f5f0df] shadow-[0_0_12px_#f5f0df]" />
+            <span className="h-px w-8 bg-[#f5f0df]/40" />
+          </div>
+          <p className="max-w-2xl text-lg leading-8 text-white/70">
+            An IT undergrad, developer, and curious mind who enjoys turning
+            ideas into things people can actually use. I've worked across web
+            development, machine learning research, and design through my
+            internship experiences. Always experimenting, learning, and building
+            something new along the way.
           </p>
         </div>
       </div>

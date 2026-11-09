@@ -7,12 +7,21 @@ const TimelineItem: React.FC<{
   title: string;
   description: string;
 }> = ({ year, title, description }) => (
-  <div style={styles.timelineItem}>
-    <div style={styles.timelineDot}></div>
-    <div style={styles.timelineContent}>
-      <h3 style={styles.itemTitle}>{title}</h3>
-      <time style={styles.itemYear}>{year}</time>
-      <p style={styles.itemDescription}>{description}</p>
+  <div className="relative mb-10">
+    <div className="absolute -left-15 top-0 h-4.5 w-4.5 rounded-full border-[3px] border-white bg-white" />
+
+    <div className="pl-2.5">
+      <h3 className="mb-1 text-[clamp(1.4rem,1.5vw+1vh,1.6rem)] text-white">
+        {title}
+      </h3>
+
+      <time className="mb-[1vh] block text-[clamp(1rem,1.1vw+0.6vh,1.2rem)] text-[#aaa]">
+        {year}
+      </time>
+
+      <p className="text-left text-[clamp(1rem,1.2vw+0.6vh,1.2rem)] leading-[1.7] text-[#ddd]">
+        {description}
+      </p>
     </div>
   </div>
 );
@@ -25,7 +34,7 @@ const EduExp: React.FC = () => {
       year: "2023 - 2027",
       title: "B.Tech in Information Technology",
       description:
-        "Currently pursuing B.Tech from BIT Sindri with a focus on software development and data structures.",
+        "Currently pursuing B.Tech from BIT Sindri with a focus on Full Stack Development, software engineering, and data structures.",
     },
     {
       year: "2022",
@@ -46,96 +55,92 @@ const EduExp: React.FC = () => {
       year: "May 2025",
       title: "Finalist at HACKATRON, HNCC BIT Sindri",
       description:
-        "Competed in a highly competitive hackathon, showcasing problem-solving skills and innovation in software development.",
+        "Competed in a highly competitive hackathon, showcasing problem-solving skills, innovation, and Full Stack Development capabilities.",
     },
     {
       year: "2025",
       title: "Internship",
       description:
-        "Details of internship responsibilities and projects will be provided soon.",
+        "Details of internship responsibilities and Full Stack Development projects will be provided soon.",
     },
   ];
 
   return (
-    <div style={styles.wrapper}>
-      <section style={styles.container}>
-        <div style={styles.tabContainer}>
-          <div style={styles.tabWrapper}>
+    <div className="relative flex h-screen w-screen items-center justify-center box-border">
+      <section className="flex h-[70vh] min-h-50 w-[50vw] min-w-87.5 flex-col items-center justify-start overflow-visible rounded-[1.6vh] bg-white/5 p-12 text-left text-[#ccc] shadow-[0_0.4vh_3vh_rgba(0,0,0,0.1)] backdrop-blur-[10px] text-[1.1rem] max-sm:w-[95vw] max-sm:p-6">
+        {/* Tabs */}
+        <div className="relative mb-[8vh] flex w-full items-center justify-center">
+          <div className="relative flex items-center">
             {activeTab === "Experience" && (
               <span
                 aria-hidden
-                style={{
-                  ...styles.triangle,
-                  left: "-1.25rem",
-                }}
+                className="absolute -left-5 top-1/2 -translate-y-1/2 animate-[smoothBlink_1.6s_ease-in-out_infinite] text-white pointer-events-none"
               >
                 ▶
               </span>
             )}
+
             <button
-              style={{
-                ...styles.tabButton,
-                ...(activeTab === "Education"
-                  ? styles.activeTab
-                  : styles.inactiveTab),
-              }}
               onClick={() => setActiveTab("Education")}
+              className={`whitespace-nowrap border-b-2 bg-transparent px-3 py-2 font-['Tenkai',sans-serif] transition-all duration-300 ${
+                activeTab === "Education"
+                  ? "border-white text-white text-[calc(clamp(1.2rem,1.8vw+0.6vh,1.4rem)+4px)]"
+                  : "border-transparent text-white/40 text-[clamp(1.2rem,1.8vw+0.6vh,1.4rem)]"
+              }`}
             >
               Education
             </button>
           </div>
 
-          <div style={styles.tabWrapper}>
+          <div className="relative flex items-center">
             {activeTab === "Education" && (
               <span
                 aria-hidden
-                style={{
-                  ...styles.triangle,
-                  right: "-1.25rem",
-                }}
+                className="absolute -right-5 top-1/2 -translate-y-1/2 animate-[smoothBlink_1.6s_ease-in-out_infinite] text-white pointer-events-none"
               >
                 ◀
               </span>
             )}
+
             <button
-              style={{
-                ...styles.tabButton,
-                ...(activeTab === "Experience"
-                  ? styles.activeTab
-                  : styles.inactiveTab),
-              }}
               onClick={() => setActiveTab("Experience")}
+              className={`whitespace-nowrap border-b-2 bg-transparent px-3 py-2 font-['Tenkai',sans-serif] transition-all duration-300 ${
+                activeTab === "Experience"
+                  ? "border-white text-white text-[calc(clamp(1.2rem,1.8vw+0.6vh,1.4rem)+4px)]"
+                  : "border-transparent text-white/40 text-[clamp(1.2rem,1.8vw+0.6vh,1.4rem)]"
+              }`}
             >
               Experience
             </button>
           </div>
         </div>
 
-        <div style={styles.contentContainer}>
+        {/* Timeline Content */}
+        <div className="relative w-full flex-1 overflow-hidden">
+          {/* Education */}
           <div
-            style={{
-              ...styles.timelineContainer,
-              ...(activeTab === "Education"
-                ? styles.activeContent
-                : styles.hiddenContent),
-            }}
+            className={`absolute h-full w-full overflow-y-auto px-2.5 transition-all duration-500 scrollbar-none ${
+              activeTab === "Education"
+                ? "visible translate-x-0 opacity-100"
+                : "invisible translate-x-full opacity-0"
+            }`}
           >
-            <div style={styles.timeline}>
+            <div className="relative border-l-2 border-[#ccc] pl-12.5 pr-4">
               {educationData.map((item, index) => (
                 <TimelineItem key={`edu-${index}`} {...item} />
               ))}
             </div>
           </div>
 
+          {/* Experience */}
           <div
-            style={{
-              ...styles.timelineContainer,
-              ...(activeTab === "Experience"
-                ? styles.activeContent
-                : styles.hiddenContent),
-            }}
+            className={`absolute h-full w-full overflow-y-auto px-2.5 transition-all duration-500 scrollbar-none ${
+              activeTab === "Experience"
+                ? "visible translate-x-0 opacity-100"
+                : "invisible translate-x-full opacity-0"
+            }`}
           >
-            <div style={styles.timeline}>
+            <div className="relative border-l-2 border-[#ccc] pl-12.5 pr-4">
               {experienceData.map((item, index) => (
                 <TimelineItem key={`exp-${index}`} {...item} />
               ))}
@@ -143,160 +148,18 @@ const EduExp: React.FC = () => {
           </div>
         </div>
       </section>
+
+      {/* Blink Animation */}
+      <style>
+        {`
+          @keyframes smoothBlink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+          }
+        `}
+      </style>
     </div>
   );
 };
-
-
-const styles: { [key: string]: React.CSSProperties } = {
-  wrapper: {
-    height: "100vh",
-    width: "100vw",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
-    boxSizing: "border-box",
-  },
-  container: {
-    width: "50vw",
-    height: "70vh",
-    minWidth: "350px",
-    minHeight: "200px",
-    padding: "3rem",
-    borderRadius: "1.6vh",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    backdropFilter: "blur(10px)",
-    WebkitBackdropFilter: "blur(10px)",
-    color: "#ccc",
-    boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.1)",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "flex-start",
-    textAlign: "left",
-    overflow: "visible",
-    fontSize: "1.1rem", 
-  },
-  tabContainer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: "8vh",
-    width: "100%",
-    position: "relative",
-  },
-  tabWrapper: {
-    position: "relative",
-    display: "flex",
-    alignItems: "center",
-  },
-  tabButton: {
-    fontFamily: "'Tenkai', sans-serif",
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    padding: "0.5rem 0.8rem",
-    margin: 0,
-    transition: "color 0.25s ease, border-bottom 0.25s ease, font-size 0.25s ease",
-    borderBottom: "2px solid transparent",
-    whiteSpace: "nowrap",
-  },
-  activeTab: {
-    color: "#fff",
-    borderBottom: "2px solid #fff",
-    fontSize: "calc(clamp(1.2rem, 1.8vw + 0.6vh, 1.4rem) + 4px)",
-  },
-  inactiveTab: {
-    color: "rgba(255,255,255,0.4)",
-    fontSize: "clamp(1.2rem, 1.8vw + 0.6vh, 1.4rem)",
-  },
-  triangle: {
-    position: "absolute",
-    top: "50%",
-    transform: "translateY(-50%)",
-    color: "#fff",
-    fontSize: "1em",
-    pointerEvents: "none",
-    animation: "smoothBlink 1.6s ease-in-out infinite",
-  },
-  contentContainer: {
-    width: "100%",
-    flex: 1,
-    position: "relative",
-    overflow: "hidden",
-  },
-  timelineContainer: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    transition: "all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94)",
-    overflowY: "auto",
-    scrollbarWidth: "none",
-    msOverflowStyle: "none",
-    paddingInline: "10px",
-  },
-  activeContent: {
-    transform: "translateX(0)",
-    opacity: 1,
-    visibility: "visible",
-  },
-  hiddenContent: {
-    transform: "translateX(100%)",
-    opacity: 0,
-    visibility: "hidden",
-  },
-  timeline: {
-    borderLeft: "2px solid #ccc",
-    paddingLeft: "50px",
-    position: "relative",
-    paddingRight: "1rem",
-  },
-  timelineItem: {
-    position: "relative",
-    marginBottom: "40px",
-  },
-  timelineDot: {
-    position: "absolute",
-    left: "-60px",
-    top: "0",
-    width: "18px",
-    height: "18px",
-    backgroundColor: "#fff",
-    borderRadius: "50%",
-    border: "3px solid #fff",
-  },
-  timelineContent: {
-    paddingLeft: "10px",
-  },
-  itemTitle: {
-    fontSize: "clamp(1.4rem, 1.5vw + 1vh, 1.6rem)",
-    color: "#fff",
-    marginBottom: "0.5vh",
-  },
-  itemYear: {
-    fontSize: "clamp(1rem, 1.1vw + 0.6vh, 1.2rem)",
-    color: "#aaa",
-    marginBottom: "1vh",
-    display: "block",
-  },
-  itemDescription: {
-    fontSize: "clamp(1rem, 1.2vw + 0.6vh, 1.2rem)",
-    lineHeight: 1.7,
-    color: "#ddd",
-    textAlign: "left",
-  },
-};
-
-
-const styleSheet = document.createElement("style");
-styleSheet.type = "text/css";
-styleSheet.innerText = `
-  @keyframes smoothBlink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-`;
-document.head.appendChild(styleSheet);
 
 export default EduExp;

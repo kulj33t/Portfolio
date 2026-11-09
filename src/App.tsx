@@ -8,8 +8,8 @@ import About from "./components/About";
 import Skills from "./components/Skills";
 import Projects from "./components/Projects";
 import ResumeBtn from "./components/ReumeBtn";
-import DotFiles from './pages/DotFiles';
-import ResumePage from './pages/ResumePage';
+import DotFiles from "./pages/DotFiles";
+import ResumePage from "./pages/ResumePage";
 import "./App.css";
 
 const Home: React.FC = () => (
@@ -20,22 +20,22 @@ const Home: React.FC = () => (
     </section>
 
     <section id="about">
-      <About/>
+      <About />
     </section>
 
     <section id="Tech">
-      <Skills/>
+      <Skills />
     </section>
 
     <section id="Project">
-      <Projects/>
+      <Projects />
     </section>
 
     <section id="footer">
-      <Footer/>
+      <Footer />
     </section>
 
-    <ResumeBtn/>
+    <ResumeBtn />
   </>
 );
 

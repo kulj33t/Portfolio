@@ -1,96 +1,45 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import TechStack from "./TechStack";
 
 const Skills: React.FC = () => {
-  const [isPortrait, setIsPortrait] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsPortrait(window.innerHeight > window.innerWidth);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const dynamicCardStyle: React.CSSProperties = {
-    flexDirection: isPortrait ? "column" : "row",
-    minWidth: isPortrait ? "350px" : "700px",
-    maxWidth: isPortrait ? "350px" : "70vw",
-    width: isPortrait ? "350px" : "60vw",
-    height: isPortrait ? "660px" : "400px",
-  };
-
-  const dynamicLeftStyle: React.CSSProperties = {
-    alignItems: isPortrait ? "center" : "flex-start",
-    textAlign: isPortrait ? "center" : "left",
-  };
-
   return (
-    <div style={styles.wrapper}>
-      <div style={{ ...styles.card, ...dynamicCardStyle }}>
-        <div style={{ ...styles.left, ...dynamicLeftStyle }}>
-          <h2 style={styles.heading}>Front-End & UI/UX Developer</h2>
-          <p style={styles.text}>
-            I specialize in designing and building modern, user-centric websites and applications. I love using tools
-            like React, TypeScript, and Three.js to bring interfaces to life with clean, performant code.
+    <div className="flex min-h-screen w-full items-center justify-center px-2 py-6">
+      {/* 
+        Layout: Kept exactly the same (w-[350px], lg:w-[60vw], etc.)
+        Aesthetics: Added the group, border, gradient, backdrop-blur-2xl, and shadow from About 
+      */}
+      <div
+        className="group relative flex flex-col overflow-visible rounded-[1.6vh] transition-all duration-500 ease-in-out lg:flex-row 
+        w-[350px] max-w-full min-h-[660px] 
+        lg:w-[60vw] lg:min-w-[700px] lg:max-w-[70vw] lg:h-[400px] lg:min-h-0
+        border border-white/12 bg-linear-to-br from-white/9 via-white/4 to-white/2 shadow-[0_20px_80px_rgba(0,0,0,0.3)] backdrop-blur-2xl hover:border-white/20 hover:shadow-[0_25px_90px_rgba(0,0,0,0.4)]"
+      >
+        {/* Decorative Glow from About */}
+        <div className="pointer-events-none absolute -right-20 -top-20 z-0 h-48 w-48 rounded-full bg-[#f5f0df]/[0.07] blur-[80px] transition-all duration-700 group-hover:bg-[#f5f0df]/12" />
+
+        {/* Left Content */}
+        <div className="relative z-10 flex min-w-0 flex-1 flex-col justify-center items-center text-center px-[4vw] py-[4vh] lg:items-start lg:text-left">
+          <h2 className="mb-[2vh] font-['Tenkai',sans-serif] text-[clamp(1.8rem,2vw+1vh,2.4rem)] tracking-wide text-white">
+            Full Stack Developer
+          </h2>
+
+          {/* Color updated to match the About text (white/70) */}
+          <p className="text-[clamp(0.9rem,1vw+0.4vh,1.1rem)] leading-[1.6] text-white/70">
+            I specialize in building modern, scalable, and user-centric web
+            applications. From crafting responsive interfaces using React and
+            TypeScript to developing robust backend systems, APIs, and database
+            solutions, I enjoy turning ideas into complete, high-performance
+            applications with clean and maintainable code.
           </p>
         </div>
-        <div style={styles.right}>
+
+        {/* Skills Wheel (Apple Watch) */}
+        <div className="relative z-10 flex w-full shrink-0 items-center justify-center overflow-visible lg:w-[350px]">
           <TechStack />
         </div>
       </div>
     </div>
   );
-};
-
-const styles: { [key: string]: React.CSSProperties } = {
-  wrapper: {
-    width: "100vw",
-    height: "100vh",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  card: {
-    display: "flex",
-    borderRadius: "1.6vh",
-    backgroundColor: "rgba(255, 255, 255, 0.05)",
-    backdropFilter: "blur(10px)",
-    WebkitBackdropFilter: "blur(10px)",
-    boxShadow: "0 0.4vh 3vh rgba(0, 0, 0, 0.2)",
-    overflow: "hidden",
-    transition: "min-width 0.3s ease, max-width 0.3s ease, flex-direction 0.3s ease",
-  },
-  left: {
-    flex: 1,
-    padding: "4vh 4vw",
-    color: "#ccc",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-  heading: {
-    fontSize: "clamp(1.8rem, 2vw + 1vh, 2.4rem)",
-    marginBottom: "2vh",
-    fontFamily: "'Tenkai', sans-serif",
-    color: "#fff",
-    letterSpacing: "1px",
-  },
-  text: {
-    fontSize: "clamp(0.9rem, 1vw + 0.4vh, 1.1rem)",
-    lineHeight: 1.6,
-    color: "#ddd",
-  },
-  right: {
-    minWidth: "350px",
-    maxWidth: "350px",
-    flex: 1,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
 };
 
 export default Skills;
