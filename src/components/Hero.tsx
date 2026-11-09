@@ -190,16 +190,9 @@ const Hero: React.FC = () => {
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
               <a
                 href="#Project"
-                className="inline-flex items-center justify-center px-6 py-3 rounded-full bg-white text-black font-semibold text-xs sm:text-sm tracking-wide transition-all hover:bg-zinc-200 hover:scale-105 active:scale-95 shadow-lg"
-              >
-                View Projects
-              </a>
-
-              <a
-                href="#about"
                 className="inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/20 bg-white/3 text-white font-semibold text-xs sm:text-sm tracking-wide transition-all hover:bg-white/10 hover:border-white/40 backdrop-blur-md"
               >
-                About Me
+                View Projects
               </a>
             </div>
           </div>
