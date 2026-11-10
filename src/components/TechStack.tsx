@@ -46,8 +46,8 @@ const TechStack: React.FC = () => {
           {/* Screen */}
           <div
             className="
-              relative flex aspect-[17/21]
-              w-[min(calc(100vw-3.5rem),19rem)]
+              relative flex aspect-17/21
+              w-[min(calc(100vw-3.5rem),19rem)] min-w-60
               items-center justify-center
               overflow-hidden rounded-[2.2rem]
               bg-[#0a0a0a]
