@@ -90,7 +90,7 @@ const Header: React.FC = () => {
           href="#hero"
           className="
             group flex shrink-0 flex-col items-start
-            font-['Tenkai',sans-serif]
+            font-sans
             text-xl tracking-[2px] text-white
             no-underline sm:text-2xl
           "

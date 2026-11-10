@@ -11,10 +11,15 @@ import * as THREE from "three";
 import { Canvas, useLoader, useThree } from "@react-three/fiber";
 import { OrbitControls, useProgress } from "@react-three/drei";
 import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
-import { GLTFLoader } from "three-stdlib";
+import { DRACOLoader, GLTFLoader } from "three-stdlib";
 import { PerspectiveCamera } from "three";
 
 const MODEL_GLB = "/models/desk.glb";
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath(
+  "https://www.gstatic.com/draco/versioned/decoders/1.5.7/",
+);
 
 const MODEL_SCALE = 1;
 const MODEL_POSITION: [number, number, number] = [0, 0, 0];
@@ -48,7 +53,9 @@ interface DeskModelProps {
 }
 
 function DeskModel({ onLoaded }: DeskModelProps) {
-  const gltf = useLoader(GLTFLoader, MODEL_GLB);
+  const gltf = useLoader(GLTFLoader, MODEL_GLB, (loader) => {
+    loader.setDRACOLoader(dracoLoader);
+  });
   const object = gltf.scene;
   const { gl } = useThree();
 
@@ -61,7 +68,6 @@ function DeskModel({ onLoaded }: DeskModelProps) {
       child.castShadow = true;
       child.receiveShadow = true;
 
-      // Improve texture sharpness when surfaces are viewed at an angle.
       const materials = Array.isArray(child.material)
         ? child.material
         : [child.material];
@@ -307,7 +313,6 @@ const Hero: React.FC = () => {
   .hero-name {
     max-width: 100%;
     margin: 0 0 clamp(22px, 4svh, 34px);
-    font-family: 'Tenkai', sans-serif;
     font-size: clamp(2.35rem, 8.2vw, 5.4rem);
     font-weight: 900;
     line-height: .91;

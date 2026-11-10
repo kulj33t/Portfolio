@@ -47,7 +47,7 @@ const Skills: React.FC = () => {
             className="
            relative
            w-full
-          font-['Tenkai',sans-serif]
+          font-sans
           text-[clamp(1.15rem,5vw,1.6rem)]
           leading-[1.2] tracking-normal
         text-white
