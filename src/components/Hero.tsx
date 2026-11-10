@@ -266,285 +266,333 @@ const Hero: React.FC = () => {
   return (
     <main className="hero-root relative isolate flex min-h-svh w-full items-center justify-center overflow-x-clip bg-black font-sans text-white selection:bg-[#d87aff]/30 selection:text-white">
       <style>{`
-        /*
-         * Default = portrait/tablet/mobile:
-         * identity first, canvas second, socials below canvas.
-         *
-         * Landscape desktop is deliberately gated by BOTH width and
-         * orientation/aspect ratio. This stops tablets and narrow desktop
-         * windows switching into the side-by-side layout too early.
-         */
-        .hero-shell {
-          width: min(100%, 900px);
-          margin-inline: auto;
-          padding: clamp(104px, 13svh, 144px) 16px 48px;
-        }
+  /*
+   * OUTER CONTAINER
+   * Always maintains approximately 5% margin on both sides.
+   */
 
-        .hero-layout {
-          display: flex;
-          width: 100%;
-          min-width: 0;
-          flex-direction: column;
-          align-items: center;
-          gap: clamp(28px, 5svh, 48px);
-        }
+  .hero-shell {
+    width: 90%;
+    max-width: none;
+    margin-inline: auto;
+    padding: clamp(104px, 13svh, 144px) 0 48px;
+    box-sizing: border-box;
+    container-type: inline-size;
+    container-name: hero;
+  }
 
-        .hero-identity {
-          width: 100%;
-          min-width: 0;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          text-align: center;
-        }
+  /*
+   * DEFAULT LAYOUT
+   * Stacked when there is insufficient horizontal space.
+   */
 
-        .hero-name {
-          max-width: 100%;
-          margin: 0 0 clamp(22px, 4svh, 34px);
-          font-family: 'Tenkai', sans-serif;
-          font-size: clamp(2.35rem, 8.2vw, 5.4rem);
-          font-weight: 900;
-          line-height: .91;
-          letter-spacing: clamp(1px, .28vw, 3px);
-          white-space: nowrap;
-          user-select: none;
-        }
+  .hero-layout {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(28px, 5svh, 48px);
+  }
 
-        .hero-name span {
-          display: block;
-        }
+  .hero-identity {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 
-        .hero-showcase {
-          display: flex;
-          width: 100%;
-          min-width: 0;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-        }
+  .hero-name {
+    max-width: 100%;
+    margin: 0 0 clamp(22px, 4svh, 34px);
+    font-family: 'Tenkai', sans-serif;
+    font-size: clamp(2.35rem, 8.2vw, 5.4rem);
+    font-weight: 900;
+    line-height: .91;
+    letter-spacing: clamp(1px, .28vw, 3px);
+    white-space: nowrap;
+    user-select: none;
+  }
 
-        .hero-canvas-frame {
-          position: relative;
-          width: 100%;
-          max-width: 760px;
-          min-width: 0;
-          height: clamp(270px, 43svh, 460px);
-          overflow: hidden;
-          border: 1px solid rgba(255,255,255,.10);
-          border-radius: 22px;
-          background: linear-gradient(180deg, rgba(255,255,255,.035), rgba(255,255,255,0));
-          box-shadow: 0 20px 80px rgba(0,0,0,.25);
-          isolation: isolate;
-        }
+  .hero-name span {
+    display: block;
+  }
 
-        .hero-socials {
-          display: flex;
-          flex: 0 0 auto;
-          flex-direction: row;
-          align-items: center;
-          justify-content: center;
-          gap: 8px;
-          padding: 8px;
-          border: 1px solid rgba(255,255,255,.10);
-          border-radius: 999px;
-          background: rgba(255,255,255,.04);
-          box-shadow: 0 20px 60px rgba(0,0,0,.25);
-          backdrop-filter: blur(18px);
-        }
+  .hero-showcase {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
 
-        .hero-social-link {
-          display: flex;
-          width: 42px;
-          height: 42px;
-          flex: 0 0 42px;
-          align-items: center;
-          justify-content: center;
-          border-radius: 999px;
-          transition: background .2s ease, transform .2s ease;
-        }
+  .hero-canvas-frame {
+    position: relative;
+    width: 100%;
+    max-width: 760px;
+    min-width: 0;
+    height: clamp(270px, 43svh, 460px);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 22px;
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,.035),
+      rgba(255,255,255,0)
+    );
+    box-shadow: 0 20px 80px rgba(0,0,0,.25);
+    isolation: isolate;
+  }
 
-        .hero-social-link img {
-          width: 24px;
-          height: 24px;
-          object-fit: contain;
-        }
+  /*
+   * SOCIAL LINKS
+   */
 
-        .hero-social-link:hover {
-          transform: translateY(-2px);
-          background: rgba(255,255,255,.10);
-        }
+  .hero-socials {
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 8px;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 999px;
+    background: rgba(255,255,255,.04);
+    box-shadow: 0 20px 60px rgba(0,0,0,.25);
+    backdrop-filter: blur(18px);
+  }
 
-        .hero-social-link:focus-visible,
-        .hero-cta:focus-visible {
-          outline: 2px solid #d87aff;
-          outline-offset: 3px;
-        }
+  .hero-social-link {
+    display: flex;
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    transition: background .2s ease, transform .2s ease;
+  }
 
-        .hero-cta {
-          display: inline-flex;
-          min-height: 46px;
-          align-items: center;
-          justify-content: center;
-          padding: 0 26px;
-          border: 1px solid rgba(255,255,255,.20);
-          border-radius: 999px;
-          background: rgba(255,255,255,.03);
-          color: white;
-          font-size: 13px;
-          font-weight: 650;
-          letter-spacing: .02em;
-          backdrop-filter: blur(12px);
-          transition: background .2s ease, border-color .2s ease, transform .2s ease;
-        }
+  .hero-social-link img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+  }
 
-        .hero-cta:hover {
-          border-color: rgba(255,255,255,.42);
-          background: rgba(255,255,255,.09);
-        }
+  .hero-social-link:hover {
+    transform: translateY(-2px);
+    background: rgba(255,255,255,.10);
+  }
 
-        /* Small phones: keep the canvas compact and prevent title overflow. */
-        @media (max-width: 380px) {
-          .hero-shell {
-            padding-inline: 12px;
-          }
+  .hero-social-link:focus-visible,
+  .hero-cta:focus-visible {
+    outline: 2px solid #d87aff;
+    outline-offset: 3px;
+  }
 
-          .hero-name {
-            font-size: clamp(2.1rem, 9vw, 2.6rem);
-            letter-spacing: 1px;
-          }
+  /*
+   * CTA BUTTON
+   */
 
-          .hero-canvas-frame {
-            height: clamp(250px, 40svh, 360px);
-            border-radius: 18px;
-          }
-        }
+  .hero-cta {
+    display: inline-flex;
+    min-height: 46px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 26px;
+    border: 1px solid rgba(255,255,255,.20);
+    border-radius: 999px;
+    background: rgba(255,255,255,.03);
+    color: white;
+    font-size: 13px;
+    font-weight: 650;
+    letter-spacing: .02em;
+    backdrop-filter: blur(12px);
+    transition:
+      background .2s ease,
+      border-color .2s ease,
+      transform .2s ease;
+  }
 
-        /*
-         * Wide portrait tablets and narrow windows remain stacked.
-         * The content is intentionally capped instead of stretching to
-         * the full 1000px+ viewport width.
-         */
-        @media (min-width: 700px) and (orientation: portrait) {
-          .hero-shell {
-            width: min(100%, 820px);
-            padding-inline: 28px;
-          }
+  .hero-cta:hover {
+    border-color: rgba(255,255,255,.42);
+    background: rgba(255,255,255,.09);
+  }
 
-          .hero-name {
-            font-size: clamp(4rem, 7.2vw, 5.8rem);
-          }
+  /*
+   * SMALL PHONES
+   */
 
-          .hero-canvas-frame {
-            height: clamp(360px, 43svh, 500px);
-          }
-        }
+  @media (max-width: 380px) {
+    .hero-name {
+      font-size: clamp(2.1rem, 9vw, 2.6rem);
+      letter-spacing: 1px;
+    }
 
-        /*
-         * True desktop landscape only.
-         * 1240px minimum plus a landscape aspect ratio avoids the early
-         * breakpoint shift seen on portrait tablets and narrow windows.
-         */
-        @media (min-width: 1360px) and (min-height: 680px) and (orientation: landscape) and (min-aspect-ratio: 4/3) {
-          .hero-shell {
-            width: min(100%, 1360px);
-            padding: 112px 40px 72px;
-          }
+    .hero-canvas-frame {
+      height: clamp(250px, 40svh, 360px);
+      border-radius: 18px;
+    }
+  }
 
-          .hero-layout {
-            display: grid;
-            grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
-            align-items: center;
-            column-gap: clamp(44px, 5.5vw, 92px);
-            row-gap: 0;
-          }
+  /*
+   * PORTRAIT TABLETS
+   * Remain stacked.
+   */
 
-          .hero-identity {
-            align-items: flex-start;
-            text-align: left;
-          }
+  @media (min-width: 700px) and (orientation: portrait) {
+    .hero-name {
+      font-size: clamp(4rem, 7.2vw, 5.8rem);
+    }
 
-          .hero-name {
-            margin-bottom: 34px;
-            font-size: clamp(4.1rem, 5.1vw, 6.4rem);
-            letter-spacing: clamp(1px, .22vw, 3px);
-          }
+    .hero-canvas-frame {
+      height: clamp(360px, 43svh, 500px);
+    }
+  }
 
-          .hero-showcase {
-            flex-direction: row;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 12px;
-          }
+  /*
+   * LANDSCAPE + ENOUGH AVAILABLE WIDTH
+   *
+   * Container query checks the actual inner container width,
+   * not just the device viewport.
+   *
+   * If there is enough room, switch to inline.
+   * Otherwise, retain the stacked layout.
+   */
 
-          .hero-canvas-frame {
-            width: min(100%, 760px);
-            max-width: 760px;
-            height: clamp(380px, 54svh, 590px);
-            flex: 1 1 0;
-            border-radius: 26px;
-          }
+  @container hero (min-width: 960px) {
 
-          .hero-socials {
-            flex-direction: column;
-            gap: 8px;
-            padding: 8px;
-          }
+    .hero-layout {
+      display: grid;
+      grid-template-columns:
+        minmax(260px, .78fr)
+        minmax(540px, 1.22fr);
+      align-items: center;
+      column-gap: clamp(20px, 3vw, 60px);
+      row-gap: 0;
+    }
 
-          .hero-shell .hero-social-link {
-            width: 42px;
-            height: 42px;
-            flex-basis: 42px;
-          }
-        }
+    .hero-identity {
+      min-width: 0;
+      align-items: flex-start;
+      text-align: left;
+    }
 
-        /* Short landscape laptops: reduce vertical footprint, keep two groups. */
-        @media (min-width: 1360px) and (max-height: 679px) and (orientation: landscape) {
-          .hero-shell {
-            width: min(100%, 1320px);
-            padding: 88px 32px 36px;
-          }
+    .hero-name {
+      margin-bottom: clamp(20px, 4vh, 34px);
+      font-size: clamp(2.5rem, 5.1vw, 6.4rem);
+      letter-spacing: clamp(1px, .22vw, 3px);
+    }
 
-          .hero-layout {
-            display: grid;
-            grid-template-columns: minmax(0, .78fr) minmax(0, 1.22fr);
-            align-items: center;
-            column-gap: clamp(32px, 4vw, 64px);
-          }
+    .hero-showcase {
+      min-width: 0;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
 
-          .hero-identity {
-            align-items: flex-start;
-            text-align: left;
-          }
+    /*
+     * Canvas gets priority space but never
+     * shrinks below its minimum width.
+     */
 
-          .hero-name {
-            font-size: clamp(3.6rem, 4.5vw, 5.2rem);
-            margin-bottom: 26px;
-          }
+    .hero-canvas-frame {
+      width: 100%;
+      min-width: 460px;
+      max-width: 760px;
+      height: clamp(300px, 54svh, 590px);
+      flex: 1 1 0;
+      border-radius: 26px;
+    }
 
-          .hero-showcase {
-            flex-direction: row;
-            align-items: center;
-            gap: 10px;
-          }
+    /*
+     * Social links move beside the canvas.
+     */
 
-          .hero-canvas-frame {
-            height: min(62svh, 440px);
-            min-height: 300px;
-            flex: 1 1 0;
-          }
+    .hero-socials {
+      flex: 0 0 auto;
+      flex-direction: column;
+      gap: 8px;
+      padding: 8px;
+    }
 
-          .hero-socials {
-            flex-direction: column;
-          }
-        }
+    .hero-shell .hero-social-link {
+      width: 42px;
+      height: 42px;
+      flex-basis: 42px;
+    }
+  }
 
-        @media (prefers-reduced-motion: reduce) {
-          .hero-social-link,
-          .hero-cta {
-            transition: none;
-          }
-        }
-      `}</style>
+  /*
+   * SHORT LANDSCAPE SCREENS
+   * Compact sizing without forcing the layout inline.
+   */
+
+  @media (orientation: landscape) and (max-height: 500px) {
+
+    .hero-shell {
+      padding-top: 76px;
+      padding-bottom: 24px;
+    }
+
+    .hero-name {
+      font-size: clamp(2.2rem, 4.5vw, 4.5rem);
+      margin-bottom: 20px;
+    }
+
+    .hero-canvas-frame {
+      height: 58svh;
+      border-radius: 18px;
+    }
+  }
+
+  /*
+   * SHORT LANDSCAPE + INLINE LAYOUT
+   */
+
+  @container hero (min-width: 960px) {
+
+    @media (max-height: 500px) {
+
+      .hero-canvas-frame {
+        height: 58svh;
+        min-height: 240px;
+      }
+
+      .hero-socials {
+        gap: 4px;
+        padding: 5px;
+      }
+
+      .hero-social-link {
+        width: 34px;
+        height: 34px;
+        flex-basis: 34px;
+      }
+
+      .hero-social-link img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  /*
+   * ACCESSIBILITY
+   */
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-social-link,
+    .hero-cta {
+      transition: none;
+    }
+  }
+`}</style>
 
       <div
         aria-hidden="true"
