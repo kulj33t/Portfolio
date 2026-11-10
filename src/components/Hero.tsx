@@ -15,8 +15,6 @@ import { DRACOLoader, GLTFLoader } from "three-stdlib";
 import { PerspectiveCamera } from "three";
 
 const MODEL_GLB = "/models/desk.glb";
-
-// Draco decoder for the compressed desk.glb model.
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath(
   "https://www.gstatic.com/draco/versioned/decoders/1.5.7/",
@@ -189,7 +187,7 @@ function LoadingOverlay({
       <div className="w-full max-w-55 rounded-2xl border border-white/10 bg-white/4 p-5 text-center shadow-2xl">
         <div className="relative mx-auto mb-4 flex h-14 w-14 items-center justify-center">
           <div className="absolute inset-0 rounded-full border-2 border-white/10" />
-          <div className="absolute inset-0 animate-spin rounded-full border-2 border-r-[#d87aff]/50 border-t-[#d87aff] border-b-transparent border-l-transparent shadow-[0_0_20px_rgba(216,122,255,0.4)]" />
+          <div className="absolute inset-0 animate-spin rounded-full border-2 border-r-[#0A84FF]/50 border-t-[#0A84FF] border-b-transparent border-l-transparent shadow-[0_0_20px_rgba(10,132,255,0.4)]" />
           <span className="font-mono text-sm font-black text-white">
             {progress}%
           </span>
@@ -211,7 +209,7 @@ function LoadingOverlay({
           aria-label="Loading 3D model"
         >
           <div
-            className="h-full rounded-full bg-linear-to-r from-violet-500 via-[#d87aff] to-cyan-400 transition-[width] duration-200"
+            className="h-full rounded-full bg-linear-to-r from-[#087df5] via-[#0A84FF] to-[#60a5fa] transition-[width] duration-200"
             style={{ width: `${Math.max(5, progress)}%` }}
           />
         </div>
@@ -291,14 +289,54 @@ const Hero: React.FC = () => {
   }, [webgl2Available, isModelReady, modelError]);
 
   return (
-    <main className="hero-root relative isolate flex min-h-svh w-full items-center justify-center overflow-x-clip bg-black font-sans text-white selection:bg-[#d87aff]/30 selection:text-white">
+    <main className="hero-root relative isolate flex min-h-svh w-full items-center justify-center overflow-visible bg-black font-sans text-white selection:bg-[#0A84FF]/30 selection:text-white">
       <style>{`
-  @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap");
+  html {
+    background-color: #000;
+    background-image: radial-gradient(
+      ellipse 95vw 68vh at 72% 0px,
+      rgba(10, 132, 255, 0.105) 0%,
+      rgba(10, 132, 255, 0.045) 34%,
+      rgba(10, 132, 255, 0.012) 58%,
+      transparent 78%
+    );
+    background-repeat: no-repeat;
+    background-position: top center;
+  }
 
-  /*
-   * OUTER CONTAINER
-   * Always maintains approximately 5% margin on both sides.
-   */
+  body,
+  #root,
+  .app-container,
+  main,
+  #hero {
+    background-color: transparent !important;
+  }
+
+  .hero-root {
+    background: transparent;
+    isolation: isolate;
+    overflow: visible;
+  }
+
+  .hero-root::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    right: 0;
+    bottom: -160px;
+    left: 0;
+    background:
+      radial-gradient(
+        ellipse 95vw 68vh at 72% 100svh,
+        rgba(10, 132, 255, 0.105) 0%,
+        rgba(10, 132, 255, 0.045) 34%,
+        rgba(10, 132, 255, 0.012) 58%,
+        transparent 78%
+      );
+    pointer-events: none;
+  }
+  @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap");
 
   .hero-shell {
     width: 90%;
@@ -309,12 +347,6 @@ const Hero: React.FC = () => {
     container-type: inline-size;
     container-name: hero;
   }
-
-  /*
-   * DEFAULT LAYOUT
-   * Stacked when there is insufficient horizontal space.
-   */
-
   .hero-layout {
     display: flex;
     width: 100%;
@@ -375,11 +407,6 @@ const Hero: React.FC = () => {
     box-shadow: 0 20px 80px rgba(0,0,0,.25);
     isolation: isolate;
   }
-
-  /*
-   * SOCIAL LINKS
-   */
-
   .hero-socials {
     display: flex;
     flex: 0 0 auto;
@@ -419,21 +446,16 @@ const Hero: React.FC = () => {
 
   .hero-social-link:focus-visible,
   .hero-cta:focus-visible {
-    outline: 2px solid #d87aff;
+    outline: 2px solid #0A84FF;
     outline-offset: 3px;
   }
-
-  /*
-   * CTA BUTTON
-   */
-
   .hero-cta {
     display: inline-flex;
     min-height: 46px;
     align-items: center;
     justify-content: center;
     padding: 0 26px;
-    border: 1px solid rgba(255,255,255,.20);
+    border: 1px solid rgba(10,132,255,.38);
     border-radius: 999px;
     background: rgba(255,255,255,.03);
     color: white;
@@ -448,14 +470,10 @@ const Hero: React.FC = () => {
   }
 
   .hero-cta:hover {
-    border-color: rgba(255,255,255,.42);
-    background: rgba(255,255,255,.09);
+    border-color: rgba(10,132,255,.72);
+    background: rgba(10,132,255,.08);
+    box-shadow: 0 0 22px rgba(10,132,255,.10);
   }
-
-  /*
-   * SMALL PHONES
-   */
-
   @media (max-width: 380px) {
     .hero-name {
       font-size: clamp(2.1rem, 9vw, 2.6rem);
@@ -467,12 +485,6 @@ const Hero: React.FC = () => {
       border-radius: 18px;
     }
   }
-
-  /*
-   * PORTRAIT TABLETS
-   * Remain stacked.
-   */
-
   @media (min-width: 700px) and (orientation: portrait) {
     .hero-name {
       font-size: clamp(4rem, 7.2vw, 5.8rem);
@@ -482,16 +494,6 @@ const Hero: React.FC = () => {
       height: clamp(360px, 43svh, 500px);
     }
   }
-
-  /*
-   * LANDSCAPE + ENOUGH AVAILABLE WIDTH
-   *
-   * Container query checks the actual inner container width,
-   * not just the device viewport.
-   *
-   * If there is enough room, switch to inline.
-   * Otherwise, retain the stacked layout.
-   */
 
   @container hero (min-width: 960px) {
 
@@ -524,12 +526,6 @@ const Hero: React.FC = () => {
       justify-content: flex-end;
       gap: 12px;
     }
-
-    /*
-     * Canvas gets priority space but never
-     * shrinks below its minimum width.
-     */
-
     .hero-canvas-frame {
       width: 100%;
       min-width: 460px;
@@ -538,11 +534,6 @@ const Hero: React.FC = () => {
       flex: 1 1 0;
       border-radius: 26px;
     }
-
-    /*
-     * Social links move beside the canvas.
-     */
-
     .hero-socials {
       flex: 0 0 auto;
       flex-direction: column;
@@ -556,12 +547,6 @@ const Hero: React.FC = () => {
       flex-basis: 42px;
     }
   }
-
-  /*
-   * SHORT LANDSCAPE SCREENS
-   * Compact sizing without forcing the layout inline.
-   */
-
   @media (orientation: landscape) and (max-height: 500px) {
 
     .hero-shell {
@@ -579,11 +564,6 @@ const Hero: React.FC = () => {
       border-radius: 18px;
     }
   }
-
-  /*
-   * SHORT LANDSCAPE + INLINE LAYOUT
-   */
-
   @container hero (min-width: 960px) {
 
     @media (max-height: 500px) {
@@ -610,11 +590,6 @@ const Hero: React.FC = () => {
       }
     }
   }
-
-  /*
-   * ACCESSIBILITY
-   */
-
   @media (prefers-reduced-motion: reduce) {
     .hero-social-link,
     .hero-cta {
@@ -622,11 +597,6 @@ const Hero: React.FC = () => {
     }
   }
 `}</style>
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[32%] h-[min(90vw,850px)] w-[min(90vw,850px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d87aff]/8 blur-[130px]"
-      />
 
       <div className="hero-shell relative z-10">
         <div className="hero-layout">
@@ -664,8 +634,6 @@ const Hero: React.FC = () => {
                       powerPreference: "high-performance",
                       failIfMajorPerformanceCaveat: false,
                     }}
-                    // Render at native DPR on standard screens and up to 2x on
-                    // high-density displays for sharper edges and textures.
                     dpr={[1, 2]}
                     shadows={false}
                     camera={{
@@ -683,7 +651,7 @@ const Hero: React.FC = () => {
                     <pointLight
                       position={[-10, 2, -10]}
                       intensity={0.4}
-                      color="#d87aff"
+                      color="#0A84FF"
                     />
 
                     <Suspense fallback={null}>
@@ -746,11 +714,11 @@ const Hero: React.FC = () => {
                 !showLoader &&
                 !modelError && (
                   <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-black/60 px-3 py-1.5 font-mono text-[9px] text-zinc-300 shadow-lg backdrop-blur-md sm:text-[11px]">
-                    <span className="text-[#d87aff]" aria-hidden="true">
+                    <span className="text-[#0A84FF]" aria-hidden="true">
                       ✦
                     </span>
                     <span>Drag to rotate 3D desk</span>
-                    <span className="text-[#d87aff]" aria-hidden="true">
+                    <span className="text-[#0A84FF]" aria-hidden="true">
                       ✦
                     </span>
                   </div>

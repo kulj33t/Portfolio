@@ -14,23 +14,23 @@ import "./App.css";
 const Home: React.FC = () => (
   <>
     <Header />
-    <section id="hero">
+    <section id="hero" className="relative bg-black">
       <Hero />
     </section>
 
-    <section id="about">
+    <section id="about" className="relative bg-black">
       <About />
     </section>
 
-    <section id="Tech">
+    <section id="Tech" className="relative bg-black">
       <Skills />
     </section>
 
-    <section id="Project">
+    <section id="Project" className="relative bg-black">
       <Projects />
     </section>
 
-    <section id="footer">
+    <section id="footer" className="relative bg-black">
       <Footer />
     </section>
 
@@ -40,8 +40,8 @@ const Home: React.FC = () => (
 
 const App: React.FC = () => {
   return (
-    <div className="app-container">
-      <main>
+    <div className="app-container min-h-screen bg-black">
+      <main className="min-h-screen bg-black">
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
