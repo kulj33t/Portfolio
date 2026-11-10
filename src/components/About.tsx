@@ -298,7 +298,7 @@ const About: React.FC = () => {
                               Wi-Fi
                             </span>
                             <span className="block truncate text-[1cqw] text-white/60">
-                              Airtel_Nami-ta
+                              WiFi
                             </span>
                           </span>
                         </button>

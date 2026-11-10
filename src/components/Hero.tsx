@@ -16,6 +16,7 @@ import { PerspectiveCamera } from "three";
 
 const MODEL_GLB = "/models/desk.glb";
 
+// Draco decoder for the compressed desk.glb model.
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath(
   "https://www.gstatic.com/draco/versioned/decoders/1.5.7/",
@@ -68,6 +69,7 @@ function DeskModel({ onLoaded }: DeskModelProps) {
       child.castShadow = true;
       child.receiveShadow = true;
 
+      // Improve texture sharpness when surfaces are viewed at an angle.
       const materials = Array.isArray(child.material)
         ? child.material
         : [child.material];
@@ -224,9 +226,28 @@ const Hero: React.FC = () => {
   const [isFadingOut, setIsFadingOut] = useState(false);
   const [showLoader, setShowLoader] = useState(true);
   const [modelError, setModelError] = useState<string | null>(null);
+  const [webgl2Available, setWebgl2Available] = useState<boolean | null>(null);
 
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const { progress } = useProgress();
+
+  // Three.js r176 requires WebGL2. Check before mounting <Canvas> so browsers
+  // without WebGL2 never attempt to create a Three.js renderer.
+  useEffect(() => {
+    const canvas = document.createElement("canvas");
+    let context: WebGL2RenderingContext | null = null;
+
+    try {
+      context = canvas.getContext("webgl2", {
+        failIfMajorPerformanceCaveat: false,
+      });
+    } catch {
+      context = null;
+    }
+
+    setWebgl2Available(Boolean(context));
+    context?.getExtension("WEBGL_lose_context")?.loseContext();
+  }, []);
 
   const displayProgress = Number.isFinite(progress)
     ? Math.min(100, Math.max(0, Math.round(progress)))
@@ -258,7 +279,7 @@ const Hero: React.FC = () => {
   }, [isModelReady]);
 
   useEffect(() => {
-    if (isModelReady || modelError) return;
+    if (webgl2Available !== true || isModelReady || modelError) return;
 
     const timer = window.setTimeout(() => {
       setModelError(
@@ -267,11 +288,13 @@ const Hero: React.FC = () => {
     }, 45000);
 
     return () => window.clearTimeout(timer);
-  }, [isModelReady, modelError]);
+  }, [webgl2Available, isModelReady, modelError]);
 
   return (
     <main className="hero-root relative isolate flex min-h-svh w-full items-center justify-center overflow-x-clip bg-black font-sans text-white selection:bg-[#d87aff]/30 selection:text-white">
       <style>{`
+  @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap");
+
   /*
    * OUTER CONTAINER
    * Always maintains approximately 5% margin on both sides.
@@ -313,6 +336,7 @@ const Hero: React.FC = () => {
   .hero-name {
     max-width: 100%;
     margin: 0 0 clamp(22px, 4svh, 34px);
+    font-family: "Nunito", "Arial Rounded MT Bold", ui-rounded, system-ui, sans-serif;
     font-size: clamp(2.35rem, 8.2vw, 5.4rem);
     font-weight: 900;
     line-height: .91;
@@ -624,67 +648,84 @@ const Hero: React.FC = () => {
             aria-label="Interactive desk and social links"
           >
             <div className="hero-canvas-frame">
-              <ModelErrorBoundary onError={handleModelError}>
-                <Canvas
-                  className="h-full w-full cursor-grab active:cursor-grabbing"
-                  style={{ touchAction: "pan-y" }}
-                  gl={{
-                    antialias: true,
-                    alpha: true,
-                    powerPreference: "high-performance",
-                    failIfMajorPerformanceCaveat: false,
-                  }}
-                  // Render at native DPR on standard screens and up to 2x on
-                  // high-density displays for sharper edges and textures.
-                  dpr={[1, 2]}
-                  shadows={false}
-                  camera={{
-                    position: [50, 25, 50],
-                    fov: 50,
-                    near: 0.01,
-                    far: 10000,
-                  }}
-                  onCreated={({ gl }) => {
-                    gl.setClearColor(0x000000, 0);
-                  }}
-                >
-                  <ambientLight intensity={0.5} />
-                  <directionalLight position={[8, 10, 8]} intensity={1.1} />
-                  <pointLight
-                    position={[-10, 2, -10]}
-                    intensity={0.4}
-                    color="#d87aff"
-                  />
+              {webgl2Available === null ? (
+                <div
+                  className="absolute inset-0"
+                  aria-label="Checking 3D support"
+                />
+              ) : webgl2Available ? (
+                <ModelErrorBoundary onError={handleModelError}>
+                  <Canvas
+                    className="h-full w-full cursor-grab active:cursor-grabbing"
+                    style={{ touchAction: "pan-y" }}
+                    gl={{
+                      antialias: true,
+                      alpha: true,
+                      powerPreference: "high-performance",
+                      failIfMajorPerformanceCaveat: false,
+                    }}
+                    // Render at native DPR on standard screens and up to 2x on
+                    // high-density displays for sharper edges and textures.
+                    dpr={[1, 2]}
+                    shadows={false}
+                    camera={{
+                      position: [50, 25, 50],
+                      fov: 50,
+                      near: 0.01,
+                      far: 10000,
+                    }}
+                    onCreated={({ gl }) => {
+                      gl.setClearColor(0x000000, 0);
+                    }}
+                  >
+                    <ambientLight intensity={0.5} />
+                    <directionalLight position={[8, 10, 8]} intensity={1.1} />
+                    <pointLight
+                      position={[-10, 2, -10]}
+                      intensity={0.4}
+                      color="#d87aff"
+                    />
 
-                  <Suspense fallback={null}>
-                    <DeskModel onLoaded={handleModelLoaded} />
-                  </Suspense>
+                    <Suspense fallback={null}>
+                      <DeskModel onLoaded={handleModelLoaded} />
+                    </Suspense>
 
-                  {modelObject && (
-                    <CameraFit object={modelObject} controlsRef={controlsRef} />
-                  )}
+                    {modelObject && (
+                      <CameraFit
+                        object={modelObject}
+                        controlsRef={controlsRef}
+                      />
+                    )}
 
-                  <OrbitControls
-                    ref={controlsRef}
-                    enablePan={false}
-                    enableZoom={false}
-                    minPolarAngle={Math.PI / 6}
-                    maxPolarAngle={Math.PI / 2}
-                    rotateSpeed={0.8}
-                    enableDamping
-                    dampingFactor={0.06}
-                  />
-                </Canvas>
-              </ModelErrorBoundary>
+                    <OrbitControls
+                      ref={controlsRef}
+                      enablePan={false}
+                      enableZoom={false}
+                      minPolarAngle={Math.PI / 6}
+                      maxPolarAngle={Math.PI / 2}
+                      rotateSpeed={0.8}
+                      enableDamping
+                      dampingFactor={0.06}
+                    />
+                  </Canvas>
+                </ModelErrorBoundary>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 p-6 text-center">
+                  <p className="max-w-xs text-sm text-zinc-400">
+                    3D preview is not supported by this browser. You can still
+                    explore the portfolio.
+                  </p>
+                </div>
+              )}
 
-              {showLoader && !modelError && (
+              {webgl2Available && showLoader && !modelError && (
                 <LoadingOverlay
                   progress={displayProgress}
                   fadingOut={isFadingOut}
                 />
               )}
 
-              {modelError && (
+              {webgl2Available && modelError && (
                 <div
                   role="alert"
                   className="absolute inset-0 z-30 flex items-center justify-center bg-black/90 p-5 text-center backdrop-blur-md"
@@ -700,17 +741,20 @@ const Hero: React.FC = () => {
                 </div>
               )}
 
-              {isModelReady && !showLoader && !modelError && (
-                <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-black/60 px-3 py-1.5 font-mono text-[9px] text-zinc-300 shadow-lg backdrop-blur-md sm:text-[11px]">
-                  <span className="text-[#d87aff]" aria-hidden="true">
-                    ✦
-                  </span>
-                  <span>Drag to rotate 3D desk</span>
-                  <span className="text-[#d87aff]" aria-hidden="true">
-                    ✦
-                  </span>
-                </div>
-              )}
+              {webgl2Available &&
+                isModelReady &&
+                !showLoader &&
+                !modelError && (
+                  <div className="pointer-events-none absolute bottom-3 left-1/2 z-10 flex max-w-[calc(100%-1.5rem)] -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-white/10 bg-black/60 px-3 py-1.5 font-mono text-[9px] text-zinc-300 shadow-lg backdrop-blur-md sm:text-[11px]">
+                    <span className="text-[#d87aff]" aria-hidden="true">
+                      ✦
+                    </span>
+                    <span>Drag to rotate 3D desk</span>
+                    <span className="text-[#d87aff]" aria-hidden="true">
+                      ✦
+                    </span>
+                  </div>
+                )}
             </div>
 
             <aside className="hero-socials" aria-label="Social links">

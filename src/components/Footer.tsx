@@ -4,7 +4,13 @@ const Footer: React.FC = () => {
   return (
     <footer className="h-screen w-screen bg-white/2.5 backdrop-blur-[2px] flex justify-center items-center px-[5vw] py-[5vh] text-[#ccc] relative text-center">
       <div className="w-[clamp(280px,70vw,800px)] flex flex-col items-center gap-[clamp(1.5rem,3vh,2.5rem)] px-[2vw] py-[3vh] rounded-[1.6vh] shadow-[0_0.4vh_3vh_rgba(0,0,0,0.1)]">
-        <h1 className="text-[clamp(1.5rem,2vw+1vh,3rem)] text-white font-sans tracking-[2px]">
+        <h1
+          className="text-[clamp(1.5rem,2vw+1vh,3rem)] text-white tracking-[2px]"
+          style={{
+            fontFamily: '"Nunito", ui-rounded, system-ui, sans-serif',
+            fontWeight: 900,
+          }}
+        >
           Let’s Connect
         </h1>
         <p className="text-[clamp(0.9rem,1vw+0.5vh,1.2rem)] text-[#bbb] leading-[1.6] max-w-150">

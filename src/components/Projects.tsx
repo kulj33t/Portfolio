@@ -233,12 +233,6 @@ const Projects: React.FC = () => {
   return (
     <section className="project-hardware-wrap">
       <style>{`
-        /*
-         * Hardware sizing:
-         * - Landscape is always a 4:3 iPad frame.
-         * - Portrait is always a 3:4 iPad frame.
-         * - The frame is constrained by BOTH viewport width and height.
-         */
         .project-hardware-wrap {
           width: 100%;
           min-height: 100svh;

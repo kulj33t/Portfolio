@@ -45,16 +45,17 @@ const Skills: React.FC = () => {
           {/* Heading */}
           <h2
             className="
-           relative
-           w-full
-          font-sans
-          text-[clamp(1.15rem,5vw,1.6rem)]
-          leading-[1.2] tracking-normal
-        text-white
-          wrap-break-word
-          lg:text-[clamp(2.6rem,3.2vw,3.5rem)]
-          lg:tracking-wide
+    relative w-full
+    text-[clamp(1.15rem,5vw,1.6rem)]
+    leading-[1.2] tracking-normal
+    text-white wrap-break-word
+    lg:text-[clamp(2.6rem,3.2vw,3.5rem)]
+    lg:tracking-wide
   "
+            style={{
+              fontFamily: '"Nunito", ui-rounded, system-ui, sans-serif',
+              fontWeight: 900,
+            }}
           >
             Full Stack Developer
           </h2>
