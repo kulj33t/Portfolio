@@ -625,7 +625,7 @@ const Hero: React.FC = () => {
 
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute left-1/2 top-[32%] h-[min(90vw,850px)] w-[min(90vw,850px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d87aff]/[0.08] blur-[130px]"
+        className="pointer-events-none absolute left-1/2 top-[32%] h-[min(90vw,850px)] w-[min(90vw,850px)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d87aff]/8 blur-[130px]"
       />
 
       <div className="hero-shell relative z-10">

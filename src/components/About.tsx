@@ -13,6 +13,8 @@ const GIT_NOTIFS = [
   { title: "Git", message: "Merge conflict resolved." },
 ];
 
+type NoteSection = "about" | "internships" | "education";
+
 const About: React.FC = () => {
   const [isDark, setIsDark] = useState<boolean>(true);
 
@@ -25,6 +27,7 @@ const About: React.FC = () => {
   const [showGitHub, setShowGitHub] = useState(false);
   const [showDocker, setShowDocker] = useState(false);
   const [showNotes] = useState(true);
+  const [activeNote, setActiveNote] = useState<NoteSection>("about");
 
   const [activeVSCodeFile, setActiveVSCodeFile] = useState("About.tsx");
   const [activeFinderFolder, setActiveFinderFolder] = useState("Projects");
@@ -36,7 +39,6 @@ const About: React.FC = () => {
 
   const screenRef = useRef<HTMLDivElement>(null);
 
-  // Multilingual heading animation
   useEffect(() => {
     const phrases = [
       "Hey, I'm Kuljeet.",
@@ -86,12 +88,12 @@ const About: React.FC = () => {
           setDisplayText(description.slice(0, i));
           await sleep(10);
         }
-        await sleep(1400);
+        await sleep(5000);
         for (let i = description.length; i >= 0 && !cancelled; i--) {
           setDisplayText(description.slice(0, i));
           await sleep(4);
         }
-        await sleep(250);
+        await sleep(500);
       }
     };
     runDescription();
@@ -536,6 +538,7 @@ const About: React.FC = () => {
                           >
                             Folders
                           </div>
+
                           <div
                             className={`rounded-[0.5cqw] px-[1cqw] py-[0.8cqw] text-[1.2cqw] font-medium ${
                               isDark
@@ -545,6 +548,7 @@ const About: React.FC = () => {
                           >
                             ▤ All Notes
                           </div>
+
                           <div
                             className={`mt-[2cqw] text-[1.3cqw] font-semibold ${
                               isDark ? "text-white/45" : "text-[#77777c]"
@@ -552,62 +556,228 @@ const About: React.FC = () => {
                           >
                             Notes
                           </div>
-                          <div
-                            className={`mt-[1cqw] rounded-[1cqw] p-[1cqw] ${
-                              isDark ? "bg-white/10" : "bg-[#d8d8dd]"
-                            }`}
-                          >
-                            <p className="text-[1.3cqw] font-semibold">
-                              A little about me
-                            </p>
-                            <p
-                              className={`mt-[0.5cqw] text-[1.1cqw] ${
-                                isDark ? "text-white/45" : "text-[#77777c]"
+
+                          {[
+                            {
+                              id: "about",
+                              title: "A little about me",
+                              subtitle: "Developer · Builder",
+                            },
+                            {
+                              id: "internships",
+                              title: "Internships",
+                              subtitle: "Work experience",
+                            },
+                            {
+                              id: "education",
+                              title: "Education",
+                              subtitle: "Academic background",
+                            },
+                          ].map((note) => (
+                            <button
+                              key={note.id}
+                              type="button"
+                              onClick={() =>
+                                setActiveNote(note.id as NoteSection)
+                              }
+                              aria-pressed={activeNote === note.id}
+                              className={`mt-[1cqw] w-full rounded-[1cqw] p-[1cqw] text-left transition-colors duration-200 ${
+                                activeNote === note.id
+                                  ? isDark
+                                    ? "bg-white/10"
+                                    : "bg-[#d8d8dd]"
+                                  : "hover:bg-white/5"
                               }`}
                             >
-                              Developer · Builder · Curious mind
-                            </p>
-                          </div>
+                              <p
+                                className={`text-[1.3cqw] font-semibold ${
+                                  isDark ? "text-white" : "text-[#333338]"
+                                }`}
+                              >
+                                {note.title}
+                              </p>
+                              <p
+                                className={`mt-[0.5cqw] text-[1.1cqw] ${
+                                  isDark ? "text-white/45" : "text-[#77777c]"
+                                }`}
+                              >
+                                {note.subtitle}
+                              </p>
+                            </button>
+                          ))}
                         </aside>
 
                         <section className="min-w-0 flex-1 overflow-y-auto px-[4cqw] py-[3cqw]">
                           <div className="mx-auto w-full max-w-[min(70ch,100%)]">
-                            <p
-                              className={`mb-[1cqw] text-[1.1cqw] font-medium uppercase tracking-[0.16em] ${
-                                isDark ? "text-white/35" : "text-[#a0a0a5]"
-                              }`}
-                            >
-                              Greetings{" "}
-                            </p>
-                            <h2
-                              className={`mb-[1.5cqw] text-[3.5cqw] font-semibold tracking-tight ${
-                                isDark ? "text-white" : "text-[#252529]"
-                              }`}
-                            >
-                              {headingText}
-                              <span
-                                className={`ml-[0.2cqw] inline-block h-[0.85em] w-[0.3cqw] animate-pulse align-middle ${
-                                  isDark ? "bg-white" : "bg-[#252529]"
-                                }`}
-                              />
-                            </h2>
-                            <div
-                              className={`my-[2cqw] h-px w-full ${
-                                isDark ? "bg-white/10" : "bg-black/10"
-                              }`}
-                            />
-                            <p
-                              className={`min-h-[1.8em] whitespace-pre-line text-[1.7cqw] font-medium leading-[1.85] ${
-                                isDark ? "text-[#f0f0f2]" : "text-[#333338]"
-                              }`}
-                            >
-                              {displayText}
-                              <span
-                                className={`ml-[0.2cqw] inline-block h-[1em] w-[0.2cqw] animate-pulse align-middle ${
-                                  isDark ? "bg-white" : "bg-[#55555a]"
-                                }`}
-                              />
-                            </p>
+                            {activeNote === "about" && (
+                              <>
+                                <p
+                                  className={`mb-[1cqw] text-[1.1cqw] font-medium uppercase tracking-[0.16em] ${
+                                    isDark ? "text-white/35" : "text-[#a0a0a5]"
+                                  }`}
+                                >
+                                  Greetings
+                                </p>
+                                <h2
+                                  className={`mb-[1.5cqw] text-[3.5cqw] font-semibold tracking-tight ${
+                                    isDark ? "text-white" : "text-[#252529]"
+                                  }`}
+                                >
+                                  {headingText}
+                                  <span
+                                    className={`ml-[0.2cqw] inline-block h-[0.85em] w-[0.3cqw] animate-pulse align-middle ${
+                                      isDark ? "bg-white" : "bg-[#252529]"
+                                    }`}
+                                  />
+                                </h2>
+                                <div
+                                  className={`my-[2cqw] h-px w-full ${
+                                    isDark ? "bg-white/10" : "bg-black/10"
+                                  }`}
+                                />
+                                <p
+                                  className={`min-h-[1.8em] whitespace-pre-line text-[1.7cqw] font-medium leading-[1.85] ${
+                                    isDark ? "text-[#f0f0f2]" : "text-[#333338]"
+                                  }`}
+                                >
+                                  {displayText}
+                                  <span
+                                    className={`ml-[0.2cqw] inline-block h-[1em] w-[0.2cqw] animate-pulse align-middle ${
+                                      isDark ? "bg-white" : "bg-[#55555a]"
+                                    }`}
+                                  />
+                                </p>
+                              </>
+                            )}
+
+                            {activeNote === "internships" && (
+                              <>
+                                <p
+                                  className={`mb-[3cqw] text-[1.1cqw] font-medium uppercase tracking-[0.16em] ${
+                                    isDark ? "text-white/35" : "text-[#a0a0a5]"
+                                  }`}
+                                >
+                                  Experience
+                                </p>
+
+                                <div className="space-y-[2.5cqw] text-[1.45cqw] leading-relaxed">
+                                  <article>
+                                    <div className="flex flex-wrap items-start justify-between gap-[0.5cqw]">
+                                      <h3 className="font-semibold">
+                                        BITSA International
+                                      </h3>
+                                      <span className="text-[1.15cqw] opacity-60">
+                                        Jan 2026 – Present
+                                      </span>
+                                    </div>
+                                    <p className="mt-[0.3cqw] opacity-65">
+                                      Intern · Remote
+                                    </p>
+                                    <ul className="mt-[1cqw] list-disc space-y-[0.5cqw] pl-[2cqw] opacity-85">
+                                      <li>
+                                        Designed 20+ Figma graphics, boosting
+                                        brand reach by 30% and registrations by
+                                        20%.
+                                      </li>
+                                      <li>
+                                        Managed logistics for 10+ webinars with
+                                        300+ attendees, ensuring 100% uptime
+                                        with zero dropouts.
+                                      </li>
+                                    </ul>
+                                  </article>
+
+                                  <div
+                                    className={`h-px ${isDark ? "bg-white/10" : "bg-black/10"}`}
+                                  />
+
+                                  <article>
+                                    <div className="flex flex-wrap items-start justify-between gap-[0.5cqw]">
+                                      <h3 className="font-semibold">
+                                        Indian Institute of Information
+                                        Technology
+                                      </h3>
+                                      <span className="text-[1.15cqw] opacity-60">
+                                        May 2025 – June 2025
+                                      </span>
+                                    </div>
+                                    <p className="mt-[0.3cqw] opacity-65">
+                                      Machine Learning Research Intern ·
+                                      Guwahati, India
+                                    </p>
+                                    <ul className="mt-[1cqw] list-disc space-y-[0.5cqw] pl-[2cqw] opacity-85">
+                                      <li>
+                                        Analyzed deep learning architecture
+                                        impacts on model convergence rates,
+                                        identifying critical factors that sped
+                                        up training by 25%.
+                                      </li>
+                                      <li>
+                                        Engineered PyTorch and Matplotlib
+                                        pipelines to visualize high-dimensional
+                                        loss surfaces in 2D/3D.
+                                      </li>
+                                    </ul>
+                                    <p className="mt-[1cqw] text-[1.2cqw] opacity-60">
+                                      Technologies: Python, PyTorch, Matplotlib,
+                                      Deep Learning
+                                    </p>
+                                  </article>
+                                </div>
+                              </>
+                            )}
+
+                            {activeNote === "education" && (
+                              <>
+                                <p
+                                  className={`mb-[3cqw] text-[1.1cqw] font-medium uppercase tracking-[0.16em] ${
+                                    isDark ? "text-white/35" : "text-[#a0a0a5]"
+                                  }`}
+                                >
+                                  Academic background
+                                </p>
+
+                                <div className="space-y-[2.5cqw] text-[1.45cqw] leading-relaxed">
+                                  <article>
+                                    <div className="flex flex-wrap items-start justify-between gap-[0.5cqw]">
+                                      <h3 className="font-semibold">
+                                        Birsa Institute of Technology, Sindri
+                                      </h3>
+                                      <span className="text-[1.15cqw] opacity-60">
+                                        2023–2027
+                                      </span>
+                                    </div>
+                                    <p className="mt-[0.5cqw] opacity-75">
+                                      B.Tech, Information Technology
+                                    </p>
+                                    <p className="mt-[0.3cqw] opacity-60">
+                                      CGPA: 7.5 · Dhanbad, India
+                                    </p>
+                                  </article>
+
+                                  <div
+                                    className={`h-px ${isDark ? "bg-white/10" : "bg-black/10"}`}
+                                  />
+
+                                  <article>
+                                    <div className="flex flex-wrap items-start justify-between gap-[0.5cqw]">
+                                      <h3 className="font-semibold">
+                                        JNV Basohli, Kathua
+                                      </h3>
+                                      <span className="text-[1.15cqw] opacity-60">
+                                        2021–2022
+                                      </span>
+                                    </div>
+                                    <p className="mt-[0.5cqw] opacity-75">
+                                      Senior Secondary – XII
+                                    </p>
+                                    <p className="mt-[0.3cqw] opacity-60">
+                                      Percentage (CBSE): 82.8% · J&K, India
+                                    </p>
+                                  </article>
+                                </div>
+                              </>
+                            )}
                           </div>
                         </section>
                       </div>
