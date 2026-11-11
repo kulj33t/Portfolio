@@ -20,7 +20,7 @@ const projects: Project[] = [
     description:
       "AI-powered career platform with resume analysis, job description matching, mock interviews, DSA practice, and personalized interview preparation.",
     image: "icons/projects/careercopilot.png",
-    url: "https://careercopilot-kuljeet.vercel.app",
+    url: "https://careercopilot.kuljeet.online",
     github: "https://github.com/kulj33t/CareerCopilot",
   },
   {
