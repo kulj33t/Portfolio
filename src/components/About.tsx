@@ -276,7 +276,7 @@ const About: React.FC = () => {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: -12, scale: 0.96 }}
                       transition={{ duration: 0.2 }}
-                      className="absolute right-[1.2cqw] top-[4.5cqw] z-50 w-[30cqw]"
+                      className="absolute right-[1.2cqw] top-[4.5cqw] z-1000 w-[30cqw]"
                     >
                       <div className="grid grid-cols-2 gap-[1cqw] rounded-[2cqw] border border-white/15 bg-[#242426]/95 p-[1.2cqw] text-white shadow-2xl backdrop-blur-3xl">
                         {/* Wi-Fi */}
