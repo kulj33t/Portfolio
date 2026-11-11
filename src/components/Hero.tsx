@@ -227,6 +227,7 @@ const Hero: React.FC = () => {
 
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const { progress } = useProgress();
+
   useEffect(() => {
     const canvas = document.createElement("canvas");
     let context: WebGL2RenderingContext | null = null;
@@ -430,36 +431,167 @@ const Hero: React.FC = () => {
   }
 
   .hero-social-link:focus-visible,
-  .hero-cta:focus-visible {
+  .hero-cta:focus-visible,
+  .hero-github-link:focus-visible {
     outline: 2px solid #0A84FF;
     outline-offset: 3px;
   }
-  .hero-cta {
-    display: inline-flex;
-    min-height: 46px;
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    padding: 0 26px;
-    border: 1px solid rgba(10,132,255,.38);
+    gap: 16px;
+  }
+  .hero-action-button {
+    display: inline-flex;
+    min-height: 50px;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 0 24px;
+    border: 1px solid;
     border-radius: 999px;
-    background: rgba(255,255,255,.03);
-    color: white;
+    background: #161b22;
+    color: #f0f6fc;
     font-size: 13px;
-    font-weight: 650;
-    letter-spacing: .02em;
-    backdrop-filter: blur(12px);
+    font-weight: 700;
+    letter-spacing: .01em;
+    text-decoration: none;
+    box-shadow:
+      0 8px 24px rgba(0,0,0,.28),
+      inset 0 1px rgba(255,255,255,.04);
     transition:
       background .2s ease,
       border-color .2s ease,
-      transform .2s ease;
+      box-shadow .2s ease,
+      transform .22s cubic-bezier(.2,.75,.25,1);
+  }
+  .hero-cta {
+    border-color: rgba(10, 132, 255, .62);
+  }
+  .hero-action-button:hover {
+    background: #212830;
+    box-shadow:
+      0 10px 28px rgba(0,0,0,.34),
+      inset 0 1px rgba(255,255,255,.06);
+    transform: translateY(-2px);
+  }
+  .hero-cta:hover {
+    border-color: rgba(69, 158, 255, .88);
+  }
+  .hero-action-button:active {
+    transform: translateY(0) scale(.96);
+    transition-duration: .08s;
   }
 
-  .hero-cta:hover {
-    border-color: rgba(10,132,255,.72);
-    background: rgba(10,132,255,.08);
-    box-shadow: 0 0 22px rgba(10,132,255,.10);
+  /* --- NEW GITHUB LINK CSS --- */
+  .hero-github-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #8b949e;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: color .2s ease, transform .2s ease;
+    cursor: pointer;
   }
+  .hero-github-link:hover {
+    color: #f0f6fc;
+    transform: translateY(-1px);
+  }
+
+  .particle-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-star-icon {
+    position: relative;
+    z-index: 1;
+    width: 17px;
+    height: 17px;
+    color: #f2cc60;       /* Golden outline */
+    fill: transparent;    /* Empty center normally */
+    transition: fill .3s ease, transform .3s ease;
+  }
+  
+  .hero-github-link:hover .hero-star-icon {
+    fill: #f2cc60;        /* Golden fill on hover */
+    transform: scale(1.08);
+  }
+
+  .particle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    pointer-events: none;
+    opacity: 0;
+    color: #f2cc60;
+  }
+
+  .particle-star {
+    width: 14px;
+    height: 14px;
+    margin-top: -7px;
+    margin-left: -7px;
+  }
+  
+  .particle-star svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+  }
+
+  .particle-plus {
+    font-size: 13px;
+    font-weight: 900;
+    margin-top: -9px;
+    margin-left: -7px;
+    text-shadow: 0 2px 8px rgba(242,204,96,0.3);
+  }
+
+  .hero-github-link:hover .particle-star {
+    animation: fluidFlow 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+  }
+  
+  .hero-github-link:hover .particle-plus {
+    animation: fluidFlow 2s cubic-bezier(0.25, 0.1, 0.25, 1) infinite;
+    animation-delay: 1s;
+  }
+
+  @keyframes fluidFlow {
+    0% {
+      opacity: 0;
+      transform: translate(0, 0) scale(0.5);
+    }
+    20% {
+      opacity: 1;
+      transform: translate(4px, -15px) scale(1.1);
+    }
+    80% {
+      opacity: 0.8;
+      transform: translate(12px, -35px) scale(0.9);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(16px, -45px) scale(0.7);
+    }
+  }
+  /* -------------------------- */
+
   @media (max-width: 380px) {
+    .hero-actions {
+      gap: 12px;
+    }
+
+    .hero-action-button {
+      padding-inline: 18px;
+    }
+
     .hero-name {
       font-size: clamp(2.1rem, 9vw, 2.6rem);
       letter-spacing: 1px;
@@ -496,6 +628,10 @@ const Hero: React.FC = () => {
       min-width: 0;
       align-items: flex-start;
       text-align: left;
+    }
+
+    .hero-actions {
+      justify-content: flex-start;
     }
 
     .hero-name {
@@ -577,8 +713,11 @@ const Hero: React.FC = () => {
   }
   @media (prefers-reduced-motion: reduce) {
     .hero-social-link,
-    .hero-cta {
+    .hero-action-button {
       transition: none;
+    }
+    .hero-github-link:hover .particle {
+      animation: none;
     }
   }
 `}</style>
@@ -591,9 +730,48 @@ const Hero: React.FC = () => {
               <span>SINGH</span>
             </h1>
 
-            <a href="#Project" className="hero-cta">
-              View Projects
-            </a>
+            <div
+              className="hero-actions"
+              role="group"
+              aria-label="Explore the portfolio"
+            >
+              <a href="#Project" className="hero-action-button hero-cta">
+                View Projects
+              </a>
+
+              <a
+                href="https://github.com/kulj33t/portfolio"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hero-github-link"
+                aria-label="Open the portfolio repository on GitHub to star it"
+              >
+                <div className="particle-container">
+                  <svg
+                    className="hero-star-icon"
+                    viewBox="0 0 24 24"
+                    strokeWidth="1.8"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="m12 3.5 2.7 5.47 6.04.88-4.37 4.26 1.03 6.02L12 17.29l-5.4 2.84 1.03-6.02-4.37-4.26 6.04-.88L12 3.5Z" />
+                  </svg>
+
+                  <span className="particle particle-star" aria-hidden="true">
+                    <svg viewBox="0 0 24 24">
+                      <path d="m12 3.5 2.7 5.47 6.04.88-4.37 4.26 1.03 6.02L12 17.29l-5.4 2.84 1.03-6.02-4.37-4.26 6.04-.88L12 3.5Z" />
+                    </svg>
+                  </span>
+
+                  <span className="particle particle-plus" aria-hidden="true">
+                    +1
+                  </span>
+                </div>
+                <span>Star on GitHub</span>
+              </a>
+            </div>
           </section>
 
           <section
