@@ -310,10 +310,6 @@ const Footer: React.FC = () => {
             Let’s Connect
           </h1>
 
-          <p className="text-sm sm:text-base md:text-lg text-[#bbb] leading-relaxed max-w-[600px]">
-            Feel free to reach out for collaborations or just a friendly hello!
-          </p>
-
           {/* iMessage preview */}
           <div className="w-full max-w-[390px] flex flex-col gap-3 mt-2">
             <div className="flex flex-col items-start gap-1">
@@ -327,7 +323,10 @@ const Footer: React.FC = () => {
                 </p>
               </div>
             </div>
-
+            <p className="text-sm sm:text-base md:text-lg text-[#bbb] leading-relaxed max-w-[600px]">
+              Feel free to reach out for collaborations or just a friendly
+              hello!
+            </p>
             <button
               ref={triggerRef}
               type="button"
@@ -336,8 +335,8 @@ const Footer: React.FC = () => {
               className="group w-full min-h-[54px] flex items-center gap-3 rounded-full border border-white/10 bg-[#25262b]/90 px-4 py-2.5 text-left transition-all duration-300 hover:border-[#087df5]/60 hover:bg-[#303136] hover:shadow-[0_0_22px_rgba(8,125,245,0.16)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#087df5]"
             >
               <span className="flex-1 flex items-center gap-1 text-sm text-[#888]">
-                iMessage
                 <span className="inline-block h-[17px] w-[1.5px] bg-[#60a5fa] animate-[cursorBlink_1s_steps(2,start)_infinite] motion-reduce:animate-none" />
+                iMessage
               </span>
 
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#087df5] text-white transition-all duration-300 group-hover:scale-110 group-hover:bg-[#1688ff]">

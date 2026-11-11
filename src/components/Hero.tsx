@@ -67,7 +67,6 @@ function DeskModel({ onLoaded }: DeskModelProps) {
       child.castShadow = true;
       child.receiveShadow = true;
 
-      // Improve texture sharpness when surfaces are viewed at an angle.
       const materials = Array.isArray(child.material)
         ? child.material
         : [child.material];
@@ -228,9 +227,6 @@ const Hero: React.FC = () => {
 
   const controlsRef = useRef<OrbitControlsImpl | null>(null);
   const { progress } = useProgress();
-
-  // Three.js r176 requires WebGL2. Check before mounting <Canvas> so browsers
-  // without WebGL2 never attempt to create a Three.js renderer.
   useEffect(() => {
     const canvas = document.createElement("canvas");
     let context: WebGL2RenderingContext | null = null;
@@ -291,18 +287,10 @@ const Hero: React.FC = () => {
   return (
     <main className="hero-root relative isolate flex min-h-svh w-full items-center justify-center overflow-visible bg-black font-sans text-white selection:bg-[#0A84FF]/30 selection:text-white">
       <style>{`
-  html {
-    background-color: #000;
-    background-image: radial-gradient(
-      ellipse 95vw 68vh at 72% 0px,
-      rgba(10, 132, 255, 0.105) 0%,
-      rgba(10, 132, 255, 0.045) 34%,
-      rgba(10, 132, 255, 0.012) 58%,
-      transparent 78%
-    );
-    background-repeat: no-repeat;
-    background-position: top center;
-  }
+ html {
+  background-color: #000;
+  background-image: none;
+}
 
   body,
   #root,
@@ -311,31 +299,13 @@ const Hero: React.FC = () => {
   #hero {
     background-color: transparent !important;
   }
+.hero-root {
+  position: relative;
+  isolation: isolate;
+  background: #000;
+  overflow: visible;
+}
 
-  .hero-root {
-    background: transparent;
-    isolation: isolate;
-    overflow: visible;
-  }
-
-  .hero-root::before {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    top: 0;
-    right: 0;
-    bottom: -160px;
-    left: 0;
-    background:
-      radial-gradient(
-        ellipse 95vw 68vh at 72% 100svh,
-        rgba(10, 132, 255, 0.105) 0%,
-        rgba(10, 132, 255, 0.045) 34%,
-        rgba(10, 132, 255, 0.012) 58%,
-        transparent 78%
-      );
-    pointer-events: none;
-  }
   @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@700;800;900&display=swap");
 
   .hero-shell {
@@ -399,14 +369,29 @@ const Hero: React.FC = () => {
     overflow: hidden;
     border: 1px solid rgba(255,255,255,.10);
     border-radius: 22px;
-    background: linear-gradient(
-      180deg,
-      rgba(255,255,255,.035),
-      rgba(255,255,255,0)
-    );
+    background:
+      radial-gradient(
+        ellipse 78% 72% at 50% 52%,
+        rgba(10, 132, 255, 0.20) 0%,
+        rgba(10, 132, 255, 0.11) 34%,
+        rgba(10, 132, 255, 0.045) 62%,
+        rgba(10, 132, 255, 0) 100%
+      ),
+      linear-gradient(
+        180deg,
+        rgba(255,255,255,.035),
+        rgba(255,255,255,0)
+      );
     box-shadow: 0 20px 80px rgba(0,0,0,.25);
     isolation: isolate;
   }
+  .hero-canvas-frame > canvas {
+    position: relative;
+    z-index: 1;
+    display: block;
+    background: transparent;
+  }
+
   .hero-socials {
     display: flex;
     flex: 0 0 auto;
@@ -600,7 +585,6 @@ const Hero: React.FC = () => {
 
       <div className="hero-shell relative z-10">
         <div className="hero-layout">
-          {/* GROUP 1: IDENTITY */}
           <section className="hero-identity">
             <h1 className="hero-name text-white">
               <span>KULJEET</span>
@@ -612,7 +596,6 @@ const Hero: React.FC = () => {
             </a>
           </section>
 
-          {/* GROUP 2: CANVAS + SOCIALS */}
           <section
             className="hero-showcase"
             aria-label="Interactive desk and social links"
